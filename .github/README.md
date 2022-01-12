@@ -4,14 +4,22 @@ The cloud access bot is a  Slack bot developed within Perkbox which enables deve
 
 
 # Table of Contents
-1. [Installation](#installation)
-2. [Example2](#example2)
-3. [Third Example](#third-example)
-4. [Fourth Example](#fourth-examplehttpwwwfourthexamplecom)
-
-
-
-
+- [Features](#magic_wandfeatures)
+- [Slack App Setup](#slack-app-setup)
+- [Installation](#nut_and_bolt-installation)
+- [Running Bot Locally](#computer-running-bot-locally)
+  - [Pre Requisites](#pre-requisites)
+  - [1. Building Compiling code](#1-building-compiling-code)
+  - [2. Setting up environment](#2-setting-up-environment)
+  - [3. Running](#3-running)
+- [Configuration](#page_facing_up-configuration)
+  - [Environment Variables](#environment-variables)
+  - [Configuration file](#configuration-file)
+- [Required AWS Resources](#required-aws-resources)
+  - [DynamoDB](#dynamodb)
+  - [IAM Policy](#iam-policy)
+- [Limitations](#warning-limitations)
+- [Contributing](#contributing)
 
 ## :magic_wand:	Features
 
