@@ -31,6 +31,8 @@ To start you will need to be an admin in your workspace to create applications.
 Also navigate to https://api.slack.com/apps
 
 
+https://user-images.githubusercontent.com/26804184/149046380-9e915a86-178b-4997-806b-83e647711d85.mp4
+
 **Useful Video Timestamps**
  - Slack app Token Creation  (00:09 -> 00:28)
  - Slack bot Token Creation  (00:50 -> 00:56)
