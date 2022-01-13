@@ -5,13 +5,15 @@ The cloud access bot is a  Slack bot developed within Perkbox which enables deve
 
 # Table of Contents
 - [Features](#magic_wandfeatures)
-- [Slack App Setup](#slack-app-setup)
 - [Installation](#nut_and_bolt-installation)
-- [Running Bot Locally](#computer-running-bot-locally)
-  - [Pre Requisites](#pre-requisites)
-  - [1. Building Compiling code](#1-building-compiling-code)
-  - [2. Setting up environment](#2-setting-up-environment)
-  - [3. Running](#3-running)
+  - [Slack App Setup](#slack-app-setup)
+  - [Terraform Module](#terraform-module)
+- [Usage](#usage)
+  - [Running Bot Locally](#computer-running-bot-locally)
+    - [Pre Requisites](#pre-requisites)
+    - [1. Building Compiling code](#1-building-compiling-code)
+    - [2. Setting up environment](#2-setting-up-environment)
+    - [3. Running](#3-running)
 - [Configuration](#page_facing_up-configuration)
   - [Environment Variables](#environment-variables)
   - [Configuration file](#configuration-file)
@@ -29,8 +31,14 @@ The cloud access bot is a  Slack bot developed within Perkbox which enables deve
 - Audit logging of all requests
 
 
+## :nut_and_bolt: Installation
 
-## Slack App Setup
+The preferred installation of the Cloud Access Bot is to run the container within an container orchestrion platform, within Perkbox are using ECS Fargate to host the cloud access bot.
+
+You will also need to run thru the app setup within slack as well..
+
+
+### Slack App Setup
 
 The setup of the slack application provides you with the 
 - SLACK_APP_TOKEN
@@ -67,25 +75,23 @@ For the list of OAuth Scopes a written list of them are
 - users:read:email
 
 
-
-## :nut_and_bolt: Installation
-
-The preferred installation of the Cloud Access Bot is to run the container within an container orchestrion platform, within Perkbox are using ECS Fargate to host the cloud access bot.
+### Terraform Module
 
 Please see the terraform module within the repo as a quick start to demo the Slack bot in your own environment.
 
 [Terraform](./terrraform/)
 
-
 The cloud access bot can also be ran locally on your machine quite easily.
-
 
 Please follow the Running Bot Locally Guide which explains everything needed.
 
 
-## :computer: Running Bot Locally
 
-### Pre Requisites
+## Usage
+
+### :computer: Running Bot Locally
+
+#### Pre Requisites
 - Go 1.17+
 - AWS Access
 - S3 Bucket
@@ -93,7 +99,7 @@ Please follow the Running Bot Locally Guide which explains everything needed.
 - Slack Credentials (App and Bot Token)
 
 
-### 1. Building Compiling code
+#### 1. Building Compiling code
 
 **Requires Go to be installed**
 
@@ -106,7 +112,7 @@ From the working DIR where the main.go is located..
 In Later versions the binary will be released as part of the package.
 
 
-### 2. Setting up environment
+#### 2. Setting up environment
 
 **Requires S3 Bucket and Dynamo Table**
 
@@ -133,7 +139,7 @@ You will also need to have the [Configuration file](#configuration-file) in s3 w
 
 
 
-### 3. Running 
+#### 3. Running 
 
 Once the above steps are completed you can run the bot locally
 
