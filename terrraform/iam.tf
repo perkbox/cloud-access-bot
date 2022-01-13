@@ -17,7 +17,6 @@ module "request_access_task_execution_role" {
     "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
   ]
 
-  tag_owner = local.owner
   tag_stack = var.stack
 }
 
@@ -39,6 +38,5 @@ module "request_access_task_role" {
   )
   policy_attachments = []
 
-  tag_owner = local.owner
   tag_stack = var.stack
 }

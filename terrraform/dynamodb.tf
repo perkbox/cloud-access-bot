@@ -6,5 +6,5 @@ module "dynamodb_table" {
   hash_key  = "PK"
   range_key = "SK"
 
-  tags = local.default_tags
+  tags = var.tags
 }

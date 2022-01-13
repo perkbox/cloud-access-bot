@@ -1,12 +1,5 @@
 locals {
-  name  = "request_access_bot"
-  owner = "Devops"
-  image = "491933125842.dkr.ecr.eu-west-1.amazonaws.com/infrastructure/request-access-bot:v0.0.5"
-
-  default_tags = {
-    Owner     = local.owner
-    ManagedBy = "Terraform"
-  }
+  name = "request_access_bot"
 
   bot_config = {
     BOT_CONFIG_S3_BUCKET = "request-access-bot-config"
@@ -19,18 +12,35 @@ locals {
 }
 
 
-variable "vpc_tag_name" {
-  description = "VPC name Tag used to locate the VPC ID"
-}
-
-variable "subnet_tag_name" {
-  description = "Subnet name Tag used to locate the SUBNET IDs, must be in the VPC provided above."
-}
-
 variable "slack_app_token" {
   description = "Slack application token (Secret)"
+  type        = string
 }
 
 variable "slack_bot_token" {
   description = "Slack Bot token (Secret)"
+  type        = string
+}
+
+variable "image" {
+  description = "The docker image to launch within Fargate"
+  type        = string
+}
+
+variable "aws_subnet_ids" {
+  description = "subnet ids needed for ECS FARGATE PLACEMENT, Subnets should be part of the same VPC_ID "
+  type        = list(string)
+}
+
+variable "aws_vpc_id" {
+  description = "VPC ID for Security groups."
+  type        = string
+}
+
+
+variable "tags" {
+  default = {
+    Stack     = "CloudAccessBot"
+    ManagedBy = "Terraform"
+  }
 }
