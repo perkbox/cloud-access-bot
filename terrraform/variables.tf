@@ -22,7 +22,7 @@ variable "slack_bot_token" {
   type        = string
 }
 
-variable "image" {
+variable "docker_image" {
   description = "The docker image to launch within Fargate"
   type        = string
 }
