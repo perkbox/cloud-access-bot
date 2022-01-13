@@ -15,6 +15,6 @@ resource "aws_ecs_cluster" "request_bot_main" {
     base              = 0
   }
 
-  tags = local.default_tags
+  tags = var.tags
 }
 

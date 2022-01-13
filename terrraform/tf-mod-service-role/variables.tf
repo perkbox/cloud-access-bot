@@ -32,13 +32,8 @@ variable "policy_attachments" {
   description = "List of AWS-managed policy ARNs. Do not use this to attach customer managed account specific policies"
 }
 
-variable "tag_owner" {
-  type        = string
-  description = "The name of the resource owner"
+variable "tags" {
+  description = "The tags for resources"
 }
 
-variable "tag_stack" {
-  type        = string
-  description = "The path to the stack that owns the resources"
-}
 

@@ -14,11 +14,7 @@ resource "aws_iam_role" "role" {
 
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 
-  tags = {
-    Owner     = var.tag_owner
-    Stack     = var.tag_stack
-    ManagedBy = "Terraform"
-  }
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy" "policy" {

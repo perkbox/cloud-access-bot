@@ -1,18 +1,18 @@
 resource "aws_cloudwatch_log_group" "log_group" {
 
-  name              = "/aws/ecs/app/request_access_bot"
+  name              = "/aws/ecs/app/cloud_access_bot_logs"
   retention_in_days = 30
 
-  tags = local.default_tags
+  tags = var.tags
 }
-# # ECS task definition 
-resource "aws_ecs_task_definition" "request_access_task" {
+
+resource "aws_ecs_task_definition" "cloud_access_bot_task" {
 
   family = local.name
   container_definitions = jsonencode([
     {
       name        = local.name
-      image       = local.image
+      image       = var.image
       essential   = true
       environment = [for k, v in local.bot_config : { name = k, value = v }]
       secrets     = [for k, v in local.bot_secrets : { name = k, valueFrom = v }]
@@ -34,21 +34,21 @@ resource "aws_ecs_task_definition" "request_access_task" {
   memory                   = 512
   requires_compatibilities = ["FARGATE"]
 
-  tags = local.default_tags
+  tags = var.tags
 }
 
 
-resource "aws_ecs_service" "request_access" {
+resource "aws_ecs_service" "cloud_access_bot_service" {
 
   name                = local.name
-  task_definition     = aws_ecs_task_definition.request_access_task.arn
+  task_definition     = aws_ecs_task_definition.cloud_access_bot_task.arn
   desired_count       = 1
   cluster             = data.aws_ecs_cluster.request_bot_main.arn
   launch_type         = "FARGATE"
   scheduling_strategy = "REPLICA"
 
   network_configuration {
-    subnets          = data.aws_subnet_ids.private.ids
+    subnets          = var.aws_subnet_ids
     security_groups  = [aws_security_group.request_access.id]
     assign_public_ip = false
   }
@@ -58,5 +58,5 @@ resource "aws_ecs_service" "request_access" {
     ignore_changes = [desired_count]
   }
 
-  tags = local.default_tags
+  tags = var.tags
 }

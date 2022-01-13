@@ -1,23 +1,6 @@
 data "aws_region" "current" {
 }
 
-data "aws_vpc" "internal" {
-  filter {
-    name   = "tag:Name"
-    values = [var.vpc_tag_name]
-  }
-}
-
-data "aws_subnet_ids" "private" {
-
-  vpc_id = data.aws_vpc.internal.id
-
-  filter {
-    name   = "tag:Name"
-    values = [var.subnet_tag_name]
-  }
-}
-
 
 data "aws_caller_identity" "current" {
 }
