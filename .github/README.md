@@ -51,6 +51,7 @@ https://user-images.githubusercontent.com/26804184/149273215-3af8f8b5-f421-45c1-
   - [IAM Policy](#iam-policy)
 - [Limitations](#warning-limitations)
 - [Contributing](#contributing)
+- [Credits](#credits)
 
 
 ## :nut_and_bolt: Installation
@@ -321,7 +322,21 @@ Please note this is a working sample permissions can be tuned and tweaked to you
 
 
 
+
 # Contributing
 
 All contributions to this project are welcome please refer to the Contributing file
 [CONTRIBUTING](./CONTRIBUTING.md)
+
+
+# Credits
+
+There are some projects which we used generated files from or heavily used as part of the project and wanted to give mentions to them. 
+
+- [policy_sentry](https://github.com/salesforce/policy_sentry)
+This is used for getting some templating information about ARNS and AWS Services Available, the file can be found `internal/identitydata/assets/iam-definition.json`
+
+- [slack-go](https://github.com/slack-go/slack)
+The slack-go work is heavily used for interacting with Slacks-API's and orchestrating a handler for socketMode connections.
+
+A massive helper was this medium post [Implement Slack Slash Command in Golang using Socket Mode](https://levelup.gitconnected.com/implement-slack-slash-command-in-golang-using-socket-mode-ac693e38148c)
