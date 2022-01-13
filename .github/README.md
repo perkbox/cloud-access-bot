@@ -1,10 +1,36 @@
 # Cloud Access Bot
 
-The cloud access bot is a  Slack bot developed within Perkbox which enables developers to request elevated permission's to AWS accounts. The entire process is contained within slack and is mostly automated..
+The cloud access bot is a  Slack bot developed within Perkbox which enables developers to request elevated permission's to AWS accounts. The entire process is contained within slack and is mostly automated.
+
+The slack application itself uses slacks Socket mode to ensure maximum security by not requiring to expose any public endpoints to the internet.
+
+From  a  high level the workflow of the bot is:
+1. Users runs the slack command /request  (Customizable command name)
+2. Modal loads prompting the user for 
+ - Request Reason 
+ - Expiry time of Permissions
+ - AWS SAML Login Role
+ - AWS Account
+3. On Selection of AWS Account the modal will update and request
+ - AWS Services 
+4. On Selection of the  AWS Service the modal will update and request
+  - AWS Resources
+    This will either be via a multi-select list or a free text felid where AWS ARN's can be entered.
+
+
+## :magic_wand:	Features
+
+- Automated Temporary Permissions management 
+- Time limited elevated permissions
+- Simple approval workflow
+- Audit logging of all requests
+
+
+
+## Video of Bot in Use
 
 
 # Table of Contents
-- [Features](#magic_wandfeatures)
 - [Installation](#nut_and_bolt-installation)
   - [Slack App Setup](#slack-app-setup)
   - [Terraform Module](#terraform-module)
@@ -18,17 +44,11 @@ The cloud access bot is a  Slack bot developed within Perkbox which enables deve
   - [Environment Variables](#environment-variables)
   - [Configuration file](#configuration-file)
 - [Required AWS Resources](#required-aws-resources)
+  - [S3 Bucket](#s3-bucket)
   - [DynamoDB](#dynamodb)
   - [IAM Policy](#iam-policy)
 - [Limitations](#warning-limitations)
 - [Contributing](#contributing)
-
-## :magic_wand:	Features
-
-- Automated Temporary Permissions management 
-- Time limited elevated permissions
-- Simple approval workflow
-- Audit logging of all requests
 
 
 ## :nut_and_bolt: Installation
@@ -78,13 +98,16 @@ For the list of OAuth Scopes a written list of them are
 ### Terraform Module
 
 Please see the terraform module within the repo as a quick start to demo the Slack bot in your own environment.
+All required documentation can be found in the module.
 
-[Terraform](./terrraform/)
+[Terraform](../terrraform/)
+
+The individual required resources can be found in the section [Required AWS Resources](#required-aws-resources).
+
 
 The cloud access bot can also be ran locally on your machine quite easily.
 
-Please follow the Running Bot Locally Guide which explains everything needed.
-
+Please follow the Usage Guide [Running Bot Locally](#computer-running-bot-locally) which explains everything needed.
 
 
 ## Usage
@@ -207,6 +230,12 @@ accounts:
 
 
 ## Required AWS Resources 
+
+## S3 Bucket
+
+An S3 Bucket is required to store the configuration for the slack bot, no secrets or sensitive data are stored within the bucket.
+
+As a recommendation enabling versioning and server side encryption by default, along with disabling any form of public access or acl to ensure anything stored within the bucket is kept safe.
 
 
 ### DynamoDB 
