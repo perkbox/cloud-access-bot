@@ -29,6 +29,8 @@ From  a  high level the workflow of the bot is:
 
 ## Video of Bot in Use
 
+https://user-images.githubusercontent.com/26804184/149273215-3af8f8b5-f421-45c1-a9f7-20f9c458432d.mp4
+
 
 # Table of Contents
 - [Installation](#nut_and_bolt-installation)
