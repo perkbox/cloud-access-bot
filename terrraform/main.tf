@@ -12,7 +12,7 @@ resource "aws_ecs_task_definition" "cloud_access_bot_task" {
   container_definitions = jsonencode([
     {
       name        = local.name
-      image       = var.image
+      image       = var.docker_image
       essential   = true
       environment = [for k, v in local.bot_config : { name = k, value = v }]
       secrets     = [for k, v in local.bot_secrets : { name = k, valueFrom = v }]
