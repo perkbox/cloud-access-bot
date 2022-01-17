@@ -202,12 +202,14 @@ Both are required for the bots proper operation.
 A configuration file is used to store the primary configuration of the bot which does effect some of the selectable options within the modal prompts.
 
 
-| Var Name       | Type         | Description                                                                       |
-|----------------|--------------|-----------------------------------------------------------------------------------|
-| loginRoles     | `list`       | The Roles that users can use to login                                             |
-| approvalGroups | `list`       | The names of the slack user groups which approval messages will be sent to        |
-| regions        | `list`       | Regions to fetch resources from when the auto discovery is being used             |
-| accounts       | `dictionary` | Dictionary of accounts which the slack bot can search and create policies within  |
+| Var Name        | Type         | Description                                                                       |
+|-----------------|--------------|-----------------------------------------------------------------------------------|
+| loginRoles      | `list`       | The Roles that users can use to login                                             |
+| approvalGroups  | `list`       | The names of the slack user groups which approval messages will be sent to        |
+| regions         | `list`       | Regions to fetch resources from when the auto discovery is being used             |
+| accounts        | `dictionary` | Dictionary of accounts which the slack bot can search and create policies within  |
+| dynamoDbTable   | `string`     | Name of the Dynamodb table to use                                                 |
+| request_command | `string`     | Slack command name, defaults to `request` Do not add the slash to the variable this id done in code|
 
 
 
