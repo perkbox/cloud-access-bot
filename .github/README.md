@@ -1,5 +1,7 @@
 # Cloud Access Bot
 
+[![codecov](https://codecov.io/gh/perkbox/cloud-access-bot/branch/main/graph/badge.svg?token=US5TXW4M67)](https://codecov.io/gh/perkbox/cloud-access-bot)
+
 The cloud access bot is a  Slack bot developed within Perkbox which enables developers to request elevated permission's to AWS accounts. The entire process is contained within slack and is mostly automated.
 
 The slack application itself uses slacks Socket mode to ensure maximum security by not requiring to expose any public endpoints to the internet.
