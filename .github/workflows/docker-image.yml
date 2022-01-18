@@ -8,9 +8,7 @@ on:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     
@@ -26,4 +24,3 @@ jobs:
         tags: |
           perkbox/cloud-access-bot:latest
         push : ${{ github.ref == 'refs/heads/main' }}
-        
