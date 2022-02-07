@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/perkbox/cloud-access-bot/internal/settings"
@@ -31,6 +32,7 @@ func main() {
 	//
 	if os.Getenv("BOT_CONFIG_S3_BUCKET") == "" || os.Getenv("BOT_CONFIG_S3_KEY") == "" {
 		logrus.WithField("err", "Ensure both BOT_CONFIG_S3_BUCKET & BOT_CONFIG_S3_KEY are set.").Errorf("Missing Env Vars")
+		fmt.Errorf("%s, some error ")
 		os.Exit(1)
 	}
 
