@@ -19,12 +19,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Commit report
-        run: |
-          git add ./changlog.md
-          git commit -am "Automated Changelog"
-          git push
-
       - name: Create Release
         uses: actions/create-release@v1
         with:
@@ -33,3 +27,7 @@ jobs:
           body: ${{steps.github_release.outputs.changelog}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Add Changelog
