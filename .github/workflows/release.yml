@@ -21,15 +21,15 @@ jobs:
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v1
         with:
-          outputFile: ./tag-changelog.md
+          outputFile: ./tagchangelog.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add tag version to changelog.
         run : |
-          - echo ##${{ steps.get_version.outputs.VERSION }} >> ./CHANAGELOG.md
-          - echo ./tag-changelog.md >> ./CHANAGELOG.md
-          - rm ./tag-changelog.md
+          - echo ${{ steps.get_version.outputs.VERSION }} >> ./CHANAGELOG.md
+          - cat tagchangelog.md >> ./CHANAGELOG.md
+          - rm tagchangelog.md
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: Push Change log to repo
