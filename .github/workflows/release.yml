@@ -65,11 +65,11 @@ jobs:
           branch: main
           commit_message: Automated Changelog Update
 
-      - name: Create Release
-        uses: actions/create-release@v1
+      - name: Release
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
+          name: ${{ github.ref }}
           body: ${{steps.github_release.outputs.changelog}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
