@@ -32,7 +32,8 @@ jobs:
           echo $'\n' >> ./release-chg-tmp.md
           cat release-chg-tmp.md CHANAGELOG.md > tmp.md
           mv tmp.md CHANAGELOG.md
-          rm tagchangelog.md release-chg-tmp.md tmp.md
+          rm tagchangelog.md release-chg-tmp.md
+         
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: Push Change log to repo
