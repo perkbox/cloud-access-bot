@@ -18,7 +18,7 @@ jobs:
           outputFile: ./changlog.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Commit report
         run: |
           git add ./changlog.md
