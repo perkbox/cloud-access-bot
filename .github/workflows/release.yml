@@ -18,6 +18,12 @@ jobs:
           outputFile: ./changlog.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Commit report
+        run: |
+          git add ./changlog.md
+          git commit -am "Automated Changelog"
+          git push
 
       - name: Create Release
         uses: actions/create-release@v1
