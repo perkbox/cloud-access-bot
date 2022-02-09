@@ -27,7 +27,9 @@ jobs:
 
       - name: Add tag version to changelog.
         run : |
-          echo ##${{ steps.get_version.outputs.VERSION }} >> ./CHANAGELOG.md
+          echo $'\n \n \n' >> ./CHANAGELOG.md
+          echo "##${{ steps.get_version.outputs.VERSION }}" >> ./CHANAGELOG.md
+          cho $'\n' >> ./CHANAGELOG.md
           cat tagchangelog.md >> ./CHANAGELOG.md
           rm tagchangelog.md
 
