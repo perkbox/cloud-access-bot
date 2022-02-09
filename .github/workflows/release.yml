@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Build Changelog
         id: github_release
@@ -23,7 +25,6 @@ jobs:
         name: Push Change log to repo
         with:
           branch: main
-          file_pattern: *.md
           commit_message: Add Changelog
 
       - name: Create Release
