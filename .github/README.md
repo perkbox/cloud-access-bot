@@ -322,6 +322,8 @@ Please note this is a working sample permissions can be tuned and tweaked to you
 
 - Only Supports SAML based AWS logins 
 - Limited auto-loading aws services (Services where ARN's are generated)
+  - S3
+  - DynamoDB
 - Single Service policy's ( At the moment )
 
 
