@@ -29,6 +29,7 @@ jobs:
         run : |
           echo $'\n \n \n' >> release-chg-tmp.md
           echo "## ${{ steps.get_version.outputs.VERSION }}" >> release-chg-tmp.md
+          cat tagchangelog.md >> release-chg-tmp.md
           echo $'\n' >> release-chg-tmp.md
           cat release-chg-tmp.md CHANAGELOG.md > tmp.md
           mv tmp.md CHANAGELOG.md
