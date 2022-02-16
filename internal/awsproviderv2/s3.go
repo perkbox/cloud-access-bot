@@ -35,7 +35,7 @@ func (s3p *S3Provider) GetBucketNames(accountRoleArn string) []string {
 	if accountRoleArn != "" {
 		cfg, err := assumeRole(accountRoleArn, *s3p.STSProvider)
 		if err != nil {
-			logrus.Errorf("Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
+			logrus.Errorf("func:GetBucketNames: Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
 		}
 		p = NewS3Client(cfg)
 	}
@@ -46,7 +46,7 @@ func (s3p *S3Provider) GetBucketNames(accountRoleArn string) []string {
 			o.Region = region
 		})
 		if err != nil {
-			logrus.Errorf("Error fetching S3 buckets from region %s with role %s", region, accountRoleArn)
+			logrus.Errorf("func:GetBucketNames: Error fetching S3 buckets from region %s with role %s", region, accountRoleArn)
 			continue
 		}
 

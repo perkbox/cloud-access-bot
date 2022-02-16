@@ -1,7 +1,6 @@
 package settings
 
 import (
-	"errors"
 	"fmt"
 
 	"gopkg.in/yaml.v3"
@@ -53,10 +52,10 @@ func (s Settings) GetRoleArn(accountName string) (string, error) {
 		if val.IamRole != "" {
 			return val.IamRole, nil
 		}
-		return "", errors.New("error IamRole isnt Set")
+		return "", fmt.Errorf("func:GetRoleArn: error IamRole isnt Set")
 	}
 
-	return "", fmt.Errorf("error finding account in config, %s", accountName)
+	return "", fmt.Errorf("func:GetRoleArn: error finding account in config, %s", accountName)
 }
 func (s Settings) GetAccountNames() []string {
 	var accountNames []string
