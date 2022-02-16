@@ -22,7 +22,7 @@ type Messenger interface {
 	PostBlockMessage(channelId string, msgContents []slack.Block, requestId string) (string, string, error)
 	GetUserIdsFromGroup(groups []string) ([]string, error)
 	UpdateMessageFromMessageObj(requestId string, approvalMsgObj []ApprovalMsgObj, msgContents []slack.Block) error
-	GenerateModal(modalType string, Accounts, LoginRoles []string, hasResourceFinder bool, privateMetadata string, selectedService string) slack.ModalViewRequest
+	GenerateModal(modalType string, Accounts, LoginRoles []string, hasResourceFinder bool, privateMetadata string, selectedService string) (slack.ModalViewRequest, error)
 }
 
 type Repo interface {

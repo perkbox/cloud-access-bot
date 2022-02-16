@@ -48,7 +48,7 @@ func (r *DynamodbRepo) UpdateApprovingUser(UserID, RequestId, approvingUser stri
 
 	_, err := r.Client.UpdateItem(context.TODO(), updateInput)
 	if err != nil {
-		return fmt.Errorf("error Running DynamoDB Update  %w", err)
+		return fmt.Errorf("func:UpdateApprovingUser: error Running DynamoDB Update  %w", err)
 	}
 	return nil
 }
@@ -64,7 +64,7 @@ func (r *DynamodbRepo) QueryAuditObjs(UserID string) ([]internal.AuditObject, er
 
 	respitems, err := r.Client.Query(context.TODO(), input)
 	if err != nil {
-		return []internal.AuditObject{}, fmt.Errorf("error running DynamoDb Query response: %w", err)
+		return []internal.AuditObject{}, fmt.Errorf("func:QueryAuditObjs: error running DynamoDb Query response: %w", err)
 	}
 
 	var records []internal.AuditObject
@@ -72,7 +72,7 @@ func (r *DynamodbRepo) QueryAuditObjs(UserID string) ([]internal.AuditObject, er
 		var itemRecord repoAuditObject
 		err = attributevalue.UnmarshalMap(item, &itemRecord)
 		if err != nil {
-			return []internal.AuditObject{}, fmt.Errorf("error unmarshalling response: %w", err)
+			return []internal.AuditObject{}, fmt.Errorf("func:QueryAuditObjs: error unmarshalling response: %w", err)
 		}
 		records = append(records, itemRecord.convertFromRepoObject())
 	}
@@ -90,13 +90,13 @@ func (r *DynamodbRepo) GetAuditObj(UserID, RequestId string) (internal.AuditObje
 	})
 
 	if err != nil {
-		return internal.AuditObject{}, fmt.Errorf("error Getting dynamoDb item: %w", err)
+		return internal.AuditObject{}, fmt.Errorf("func:GetAuditObj: error Getting dynamoDb item: %w", err)
 	}
 
 	var record repoAuditObject
 	err = attributevalue.UnmarshalMap(item.Item, &record)
 	if err != nil {
-		return internal.AuditObject{}, fmt.Errorf("error unmarshalling dynamoDb response: %w", err)
+		return internal.AuditObject{}, fmt.Errorf("func:GetAuditObj: error unmarshalling dynamoDb response: %w", err)
 	}
 
 	return record.convertFromRepoObject(), nil
@@ -106,7 +106,7 @@ func (r *DynamodbRepo) SetAuditObj(requestObj internal.AuditObject) error {
 	repoObj := convertToRepoObj(requestObj)
 	data, err := attributevalue.MarshalMap(repoObj)
 	if err != nil {
-		return fmt.Errorf("error marshalling response: %w", err)
+		return fmt.Errorf("func:SetAuditObj: error marshalling response: %w", err)
 	}
 
 	_, err = r.Client.PutItem(context.TODO(), &dynamodb.PutItemInput{
@@ -115,7 +115,7 @@ func (r *DynamodbRepo) SetAuditObj(requestObj internal.AuditObject) error {
 		TableName: aws.String(r.TableName),
 	})
 	if err != nil {
-		return fmt.Errorf("error Putting item into DynamoDb: %w", err)
+		return fmt.Errorf("func:SetAuditObj: error Putting item into DynamoDb: %w", err)
 	}
 
 	return nil

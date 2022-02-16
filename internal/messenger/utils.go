@@ -32,7 +32,7 @@ func GetValuesFromSelectedOptions(selectedOptions []slack.OptionBlockObject) []s
 func SliceToOptions(slice []string, TextType string) Options {
 	var opts []Option
 	if len(slice) > 100 {
-		logrus.Errorf("Slice Greater than 100 limit of modal Options: %d", len(slice))
+		logrus.Errorf("Slice Greater than 100 limit of modal Options,Returning Nil list: %d", len(slice))
 		return Options{}
 	}
 
@@ -74,7 +74,7 @@ func renderTemplate(fs fs.FS, file string, args interface{}) (bytes.Buffer, erro
 
 	f, err := fs.Open(file)
 	if err != nil {
-		return bytes.Buffer{}, fmt.Errorf("error opening asset file %s", err.Error())
+		return bytes.Buffer{}, fmt.Errorf("func:renderTemplate: error opening asset file %s", err.Error())
 	}
 
 	fby, _ := ioutil.ReadAll(f)
@@ -84,7 +84,7 @@ func renderTemplate(fs fs.FS, file string, args interface{}) (bytes.Buffer, erro
 
 	err = t.Execute(&tpl, args)
 	if err != nil {
-		return bytes.Buffer{}, fmt.Errorf("error Rendering template %s", err.Error())
+		return bytes.Buffer{}, fmt.Errorf("func:renderTemplate: error Rendering template %s", err.Error())
 	}
 
 	return tpl, nil

@@ -11,7 +11,7 @@ import (
 	"github.com/slack-go/slack"
 )
 
-func GetRequestAccessModal(tmplVals Template) slack.ModalViewRequest {
+func GetRequestAccessModal(tmplVals Template) (slack.ModalViewRequest, error) {
 	tmplVals.TimeInputID = TimeInputID
 	tmplVals.AccountSelectorId = AccountSelectorActionId
 	tmplVals.ServiceActionId = IamServicesSelectorActionID
@@ -32,10 +32,10 @@ func GetRequestAccessModal(tmplVals Template) slack.ModalViewRequest {
 	err = json.Unmarshal(str, &view)
 
 	if err != nil {
-		logrus.Errorf("---ERROR MARSHALLING func:GetBlocks %s", err.Error())
+		return slack.ModalViewRequest{}, fmt.Errorf("func:GetRequestAccessModal: error marshalling access modeal view..  %s", err.Error())
 	}
 
-	return view
+	return view, nil
 }
 
 func GetRequestApprovalBlocks(auditObj internal.AuditObject, gotResponse bool, responseMSG string) ([]slack.Block, error) {
@@ -45,19 +45,19 @@ func GetRequestApprovalBlocks(auditObj internal.AuditObject, gotResponse bool, r
 
 	tmpl, err := renderTemplate(slashCommandAssets, "assets/requestapproval.json", approvalTmplVals)
 	if err != nil {
-		return nil, fmt.Errorf("error rending template  for approval messages  err: %s", err.Error())
+		return nil, fmt.Errorf("func:GetRequestApprovalBlocks: error rending template  for approval messages  err: %s", err.Error())
 	}
 	// we convert the view into a message struct
 	view := slack.Msg{}
 
 	str, err := ioutil.ReadAll(&tmpl)
 	if err != nil {
-		return nil, fmt.Errorf("error reading processed approval msg template  err: %s", err.Error())
+		return nil, fmt.Errorf("func:GetRequestApprovalBlocks: error reading processed approval msg template  err: %s", err.Error())
 	}
 
 	err = json.Unmarshal(str, &view)
 	if err != nil {
-		return nil, fmt.Errorf("error umarhsalling approval msg into slack.Block  err: %s", err.Error())
+		return nil, fmt.Errorf("GetRequestApprovalBlocks: error umarhsalling approval msg into slack.Block  err: %s", err.Error())
 
 	}
 

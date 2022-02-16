@@ -15,8 +15,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/iam v1.10.1
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.17.0
 	github.com/aws/aws-sdk-go-v2/service/sts v1.8.0
+	github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20190729070250-5ae5475bae5e
 	github.com/joho/godotenv v1.4.0
-	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slack-go/slack v0.0.0-00010101000000-000000000000
