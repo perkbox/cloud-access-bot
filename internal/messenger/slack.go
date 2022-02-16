@@ -22,7 +22,7 @@ func NewMessenger(Client *slack.Client) *Messenger {
 	}
 }
 
-func (m *Messenger) GenerateModal(modalType string, Accounts, LoginRoles []string, hasResourceFinder bool, privateMetadata string, selectedService string) slack.ModalViewRequest {
+func (m *Messenger) GenerateModal(modalType string, Accounts, LoginRoles []string, hasResourceFinder bool, privateMetadata string, selectedService string) (slack.ModalViewRequest, error) {
 	switch modalType {
 	case "firstView":
 		firstViewtmplvals := Template{
@@ -58,7 +58,7 @@ func (m *Messenger) GenerateModal(modalType string, Accounts, LoginRoles []strin
 		return GetRequestAccessModal(servicesViewtmplVals)
 	}
 
-	return slack.ModalViewRequest{}
+	return slack.ModalViewRequest{}, nil
 }
 
 func (m *Messenger) UpdateMessageFromMessageObj(requestId string, approvalMsgObj []internal.ApprovalMsgObj, msgContents []slack.Block) error {
@@ -69,7 +69,7 @@ func (m *Messenger) UpdateMessageFromMessageObj(requestId string, approvalMsgObj
 				Footer: requestId, Ts: json.Number(strconv.Itoa(int(time.Now().Unix())))}),
 			slack.MsgOptionBlocks(msgContents...),
 		); err != nil {
-			return fmt.Errorf("error updating message from audit object %s", err.Error())
+			return fmt.Errorf("func:UpdateMessageFromMessageObj: error updating message from audit object %s", err.Error())
 		}
 	}
 	return nil
@@ -85,7 +85,7 @@ func (m *Messenger) PostSimpleMessage(channelId string, msgText string, requestI
 	_, _, err := m.SlackClient.PostMessage(channelId, slack.MsgOptionText(msgText, false), slack.MsgOptionAttachments(slack.Attachment{Fields: []slack.AttachmentField{{}},
 		Footer: requestId, Ts: json.Number(strconv.Itoa(int(time.Now().Unix())))}))
 	if err != nil {
-		return fmt.Errorf("Error Posting Mesage to Requesting User:%s", err.Error())
+		return fmt.Errorf("func:PostSimpleMessage: Error Posting Mesage to Requesting User:%s", err.Error())
 	}
 	return nil
 }
@@ -94,7 +94,7 @@ func (m *Messenger) GetUserIdsFromGroup(groups []string) ([]string, error) {
 	var approverIds []string
 	grp, err := m.SlackClient.GetUserGroups()
 	if err != nil {
-		return []string{}, fmt.Errorf("error getting users from group %w", err)
+		return []string{}, fmt.Errorf("func:GetUserIdsFromGroup: error getting users from group %w", err)
 	}
 
 	for _, v := range grp {
