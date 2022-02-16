@@ -43,7 +43,7 @@ func (i IamPolicyMan) IsPolicyExpired(policy string) (bool, error) {
 
 	err := json.Unmarshal(policyBytes, &iampolicy)
 	if err != nil {
-		return false, fmt.Errorf("error unmarshalling iam policy: %s", err)
+		return false, fmt.Errorf("func:IsPolicyExpired: error unmarshalling iam policy: %s", err)
 	}
 
 	for _, statement := range iampolicy.Statement {
@@ -86,10 +86,10 @@ func (i *IamPolicyMan) GeneratePolicyFromAuditObj(curTime time.Time, object inte
 
 	for _, service := range object.Services {
 		if _, ok := object.Actions[service]; !ok {
-			return nil, fmt.Errorf("error generating IAM statement. Unable to find actions for service: %s", service)
+			return nil, fmt.Errorf("func:GeneratePolicyFromAuditObj: error generating IAM statement. Unable to find actions for service: %s", service)
 		}
 		if _, ok := arns[service]; !ok {
-			return nil, fmt.Errorf("error generating IAM statement. Unable to find actions for service: %s", service)
+			return nil, fmt.Errorf("func:GeneratePolicyFromAuditObj: error generating IAM statement. Unable to find actions for service: %s", service)
 		}
 
 		timeDuration, _ := strconv.Atoi(object.Duration)
@@ -136,10 +136,10 @@ func (i *IamPolicyMan) generateArns(AccountId string, Services []string, Resourc
 				//For resources which SHOULD have a template run through the below logic to template them and add them to the
 				// map[string][]string
 				if _, ok := i.arnTemplates[service]; !ok {
-					return nil, fmt.Errorf("error generating arns, no template found for service %s", service)
+					return nil, fmt.Errorf("func:generateArns: error generating arns, no template found for service %s", service)
 				}
 				if _, ok := i.arnTmplFieldNames[service]; !ok {
-					return nil, fmt.Errorf("error generating arns, no template feild name found for service %s", service)
+					return nil, fmt.Errorf("func:generateArns: error generating arns, no template feild name found for service %s", service)
 				}
 
 				tmplVals[i.arnTmplFieldNames[service]] = resource

@@ -32,7 +32,7 @@ func (dyn *DynamodbProvider) GetDynamoTableNames(accountRoleArn string) []string
 	if accountRoleArn != "" {
 		cfg, err := assumeRole(accountRoleArn, *dyn.STSProvider)
 		if err != nil {
-			logrus.Errorf("Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
+			logrus.Errorf("func:GetDynamoTableNames: Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
 		}
 		p = NewDynamoDBCClient(cfg)
 	}
@@ -43,7 +43,7 @@ func (dyn *DynamodbProvider) GetDynamoTableNames(accountRoleArn string) []string
 			o.Region = region
 		})
 		if err != nil {
-			logrus.Errorf("Error Fetching Dynamo Tables from region %s with role %s", region, accountRoleArn)
+			logrus.Errorf("func:GetDynamoTableNames: Error Fetching Dynamo Tables from region %s with role %s", region, accountRoleArn)
 			continue
 		}
 

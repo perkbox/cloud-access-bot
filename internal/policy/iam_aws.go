@@ -45,7 +45,7 @@ func (awsiam *IAMProvider) PutPolicy(accountName, roleName, policyName, policy s
 	if accountRoleArn != "" {
 		cfg, err := assumeRole(accountRoleArn, *awsiam.STSProvider)
 		if err != nil {
-			return fmt.Errorf("Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
+			return fmt.Errorf("func:PutPolicy: Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
 		}
 		i = NewIAMClient(cfg).Client
 	}
@@ -75,7 +75,7 @@ func (awsiam *IAMProvider) DeletePolicys(accountName, roleName string, InlinePol
 	if accountRoleArn != "" {
 		cfg, err := assumeRole(accountRoleArn, *awsiam.STSProvider)
 		if err != nil {
-			return fmt.Errorf("Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
+			return fmt.Errorf("func:DeletePolicys: Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
 		}
 		i = NewIAMClient(cfg).Client
 	}
@@ -97,13 +97,13 @@ func (awsiam *IAMProvider) GetCloudUserId(accountName string, roleName string) (
 	i := awsiam.Client
 	accountRoleArn, err := awsiam.Settings.GetRoleArn(accountName)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("func:GetCloudUserId ErrorGettign Role ARN Err: %s", err)
 	}
 
 	if accountRoleArn != "" {
 		cfg, err := assumeRole(accountRoleArn, *awsiam.STSProvider)
 		if err != nil {
-			return "", fmt.Errorf("Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
+			return "", fmt.Errorf("func:GetCloudUserId: Error assuming role %s. AWS Error: %s", accountRoleArn, err.Error())
 		}
 		i = NewIAMClient(cfg).Client
 	}
@@ -129,7 +129,7 @@ func (awsiam *IAMProvider) FindPolicysForRole(accountName, roleName string) (map
 	if accountRoleArn != "" {
 		cfg, err := assumeRole(accountRoleArn, *awsiam.STSProvider)
 		if err != nil {
-			return nil, fmt.Errorf("Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
+			return nil, fmt.Errorf("func:FindPolicysForRole: Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
 		}
 		i = NewIAMClient(cfg).Client
 	}
@@ -139,7 +139,7 @@ func (awsiam *IAMProvider) FindPolicysForRole(accountName, roleName string) (map
 		o.Region = "eu-west-1"
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error listing role polices: %s", err)
+		return nil, fmt.Errorf("func:FindPolicysForRole: error listing role polices: %s", err)
 	}
 
 	for _, policyName := range listPolResp.PolicyNames {
@@ -147,7 +147,7 @@ func (awsiam *IAMProvider) FindPolicysForRole(accountName, roleName string) (map
 			o.Region = "eu-west-1"
 		})
 		if err != nil {
-			return nil, fmt.Errorf("error getting inline policy from role: %s ", err)
+			return nil, fmt.Errorf("func:FindPolicysForRole: error getting inline policy from role: %s ", err)
 		}
 
 		policyDoc, _ := url.QueryUnescape(aws.ToString(policyResp.PolicyDocument))

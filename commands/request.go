@@ -1,4 +1,4 @@
-package controllers
+package commands
 
 import (
 	"fmt"
@@ -22,14 +22,7 @@ import (
 	"github.com/slack-go/slack/socketmode"
 )
 
-// SlashCommandController We create a structure to let us use dependency injection
-type SlashCommandController struct {
-	EventHandler *socketmode.SocketmodeHandler
-	Service      internal.Service
-	Settings     settings.Settings
-}
-
-func NewSlashCommandController(cfg settings.Settings, service *internal.Service, eventhandler *socketmode.SocketmodeHandler) SlashCommandController {
+func NewRequestCommandHandler(cfg settings.Settings, service *internal.Service, eventhandler *socketmode.SocketmodeHandler) SlashCommandController {
 	c := SlashCommandController{
 		EventHandler: eventhandler,
 		Service:      *service,
@@ -49,7 +42,6 @@ func NewSlashCommandController(cfg settings.Settings, service *internal.Service,
 		fmt.Sprintf("/%s", c.Settings.GetRequestCommand()),
 		c.handleRequestStart,
 	)
-	logrus.Infof("Slash command %s Registered", c.Settings.GetRequestCommand())
 
 	// Event called when user submits the model once completed all fields
 	c.EventHandler.HandleInteraction(
@@ -126,18 +118,22 @@ func (c SlashCommandController) SuggestServices(evt *socketmode.Event, clt *sock
 func (c SlashCommandController) updateViewAccountSelect(evt *socketmode.Event, clt *socketmode.Client) {
 	actionCallabck, ok := evt.Data.(slack.InteractionCallback)
 	if !ok {
-		logrus.Errorf("ERROR converting event to Update View: %v", ok)
+		logrus.Errorf("Error converting event to Update View")
 		return
 	}
 
 	client := clt.GetApiClient()
 	clt.Ack(*evt.Request)
 
-	viewBody := c.Service.Messenger.GenerateModal("accountSelectView", c.Settings.GetAccountNames(), c.Settings.GetLoginRoles(), false, "", "")
-
-	_, err := client.UpdateView(viewBody, actionCallabck.View.ExternalID, "", actionCallabck.View.ID)
+	viewBody, err := c.Service.Messenger.GenerateModal("accountSelectView", c.Settings.GetAccountNames(), c.Settings.GetLoginRoles(), false, "", "")
 	if err != nil {
-		logrus.Errorf("Error Updating View %s", err.Error())
+		logrus.Errorf("Error Getting Modal accountSelectView Err: %s", err)
+		return
+	}
+
+	_, err = client.UpdateView(viewBody, actionCallabck.View.ExternalID, "", actionCallabck.View.ID)
+	if err != nil {
+		logrus.Errorf("Error Updating View.. Err: %s", err.Error())
 		return
 	}
 }
@@ -145,7 +141,7 @@ func (c SlashCommandController) updateViewAccountSelect(evt *socketmode.Event, c
 func (c SlashCommandController) updateViewServices(evt *socketmode.Event, clt *socketmode.Client) {
 	actionCallabck, ok := evt.Data.(slack.InteractionCallback)
 	if !ok {
-		logrus.Errorf("ERROR converting event to Update View: %v", ok)
+		logrus.Errorf("ERROR converting event to Update View")
 		return
 	}
 	client := clt.GetApiClient()
@@ -155,11 +151,15 @@ func (c SlashCommandController) updateViewServices(evt *socketmode.Event, clt *s
 	clt.Ack(*evt.Request)
 
 	_, hasResourceFinder := c.Service.GetCloudResourcesForService("", selService, selAccount)
-	viewBody := c.Service.Messenger.GenerateModal("servicesView", c.Settings.GetAccountNames(), c.Settings.GetLoginRoles(), hasResourceFinder, selAccount, selService)
-
-	_, err := client.UpdateView(viewBody, actionCallabck.View.ExternalID, "", actionCallabck.View.ID)
+	viewBody, err := c.Service.Messenger.GenerateModal("servicesView", c.Settings.GetAccountNames(), c.Settings.GetLoginRoles(), hasResourceFinder, selAccount, selService)
 	if err != nil {
-		logrus.Errorf("Error Updating View %s", err.Error())
+		logrus.Errorf("Error Getting Modal servicesView Err: %s", err)
+		return
+	}
+
+	_, err = client.UpdateView(viewBody, actionCallabck.View.ExternalID, "", actionCallabck.View.ID)
+	if err != nil {
+		logrus.WithField("User", actionCallabck.User.Name).Errorf("Error Updating View Err: %s", err.Error())
 		return
 	}
 }
@@ -168,26 +168,28 @@ func (c SlashCommandController) handleRequestStart(evt *socketmode.Event, clt *s
 	// we need to cast our socket mode.Event into a Slash Command
 	command, ok := evt.Data.(slack.SlashCommand)
 	if !ok {
-		logrus.Errorf("ERROR converting event to Slash Command: %v", ok)
+		logrus.Errorf("ERROR converting event to Slash Command")
 		return
 	}
 
 	clt.Ack(*evt.Request)
 	client := clt.GetApiClient()
 
-	viewBody := c.Service.Messenger.GenerateModal("firstView", c.Settings.GetAccountNames(), c.Settings.GetLoginRoles(), false, "", "")
-
-	_, err := client.OpenView(command.TriggerID, viewBody)
+	viewBody, err := c.Service.Messenger.GenerateModal("firstView", c.Settings.GetAccountNames(), c.Settings.GetLoginRoles(), false, "", "")
+	if err != nil {
+		logrus.Errorf("Error Getting Modal firstView Err: %s", err)
+		return
+	}
+	_, err = client.OpenView(command.TriggerID, viewBody)
 	if err != nil {
 		logrus.Errorf("Error opening slack model Err: %s", err.Error())
 		return
 	}
 
 	if err != nil {
-		logrus.Errorf("ERROR while sending message for /request: %v", err)
+		logrus.Errorf("ERROR while sending message for /request: Err: %s", err)
 		return
 	}
-
 }
 
 func (c SlashCommandController) requestModelSubmitted(evt *socketmode.Event, clt *socketmode.Client) {
@@ -198,7 +200,7 @@ func (c SlashCommandController) requestModelSubmitted(evt *socketmode.Event, clt
 
 	viewCallabck, ok := evt.Data.(slack.InteractionCallback)
 	if !ok {
-		logrus.Errorf("ERROR converting event to Slash Command: %v", ok)
+		logrus.Errorf("ERROR converting event to Slash Command")
 		return
 	}
 
@@ -232,7 +234,7 @@ func (c SlashCommandController) requestModelSubmitted(evt *socketmode.Event, clt
 	client := clt.GetApiClient()
 	id, err := client.GetUserInfo(viewCallabck.User.ID)
 	if err != nil {
-		logrus.Errorf(err.Error())
+		logrus.Errorf("Error getting User info for %s Err: %s", viewCallabck.User.ID, err.Error())
 		return
 	}
 
@@ -267,18 +269,18 @@ func (c SlashCommandController) requestModelSubmitted(evt *socketmode.Event, clt
 
 	blocks, err := messenger.GetRequestApprovalBlocks(auditObj, false, "")
 	if err != nil {
-		logrus.WithField("func", "requestModelSubmitted").Errorf(" Error generating template for approval block %s\n", err.Error())
+		logrus.Errorf("Error generating template for approval block Err:%s\n", err.Error())
 	}
 
 	approvers, err := c.Service.Messenger.GetUserIdsFromGroup(c.Settings.ApprovalGroups)
 	if err != nil {
-		logrus.WithField("func", "requestModelSubmitted").Errorf(" Error getting users from group: %s\n", err.Error())
+		logrus.Errorf("Error getting users from group:  Err:%s\n", err.Error())
 	}
 
 	for _, approver := range approvers {
 		respChan, timestamp, err := c.Service.Messenger.PostBlockMessage(approver, blocks, auditObj.RequestId)
 		if err != nil {
-			logrus.WithField("func", "requestModelSubmitted").Fatalf("Error posting aproval message: %s", err.Error())
+			logrus.Fatalf("Error posting aproval message: Err:%s", err.Error())
 			return
 		}
 		msgObj := internal.ApprovalMsgObj{Ts: timestamp, Channel: respChan}
@@ -289,12 +291,13 @@ func (c SlashCommandController) requestModelSubmitted(evt *socketmode.Event, clt
 
 	err = c.Service.SetAuditObj(auditObj)
 	if err != nil {
-		logrus.Errorf("errors Setting obj in cache %s", err.Error())
+		logrus.Errorf("errors Setting obj in cache Err:%s", err.Error())
+		return
 	}
 
 	err = c.Service.Messenger.PostSimpleMessage(viewCallabck.User.ID, "Request raised and sent to approvers", auditObj.RequestId)
 	if err != nil {
-		logrus.WithField("func", "handleinteaction").Errorf("Error sending messages: %s ", err.Error())
+		logrus.Errorf("Error sending approval sent confirmation Err:%s ", err.Error())
 	}
 }
 
@@ -306,7 +309,7 @@ func (c SlashCommandController) handleReqApproval(evt *socketmode.Event, clt *so
 
 	approvalCallabck, ok := evt.Data.(slack.InteractionCallback)
 	if !ok {
-		logrus.WithField("func", "handleReqApproval").Errorf("ERROR converting event to Slash Command: %v", ok)
+		logrus.Errorf("ERROR converting event to Slash Command")
 		return
 	}
 
@@ -337,7 +340,7 @@ func (c SlashCommandController) handleReqApproval(evt *socketmode.Event, clt *so
 	responseMSG, _ := messenger.GetRequestApprovalBlocks(cachedObject, true, approverMsgText)
 
 	if err := c.Service.Messenger.UpdateMessageFromMessageObj(cachedObject.RequestId, cachedObject.ApprovalMessages, responseMSG); err != nil {
-		logrus.Errorf("error updating message from audit object %s", err.Error())
+		logrus.Errorf("error updating message from audit object  Err:%s", err.Error())
 	}
 
 	cloudAccountName := c.Settings.GetAccountNameAccountNum(cachedObject.AccountId)
@@ -347,17 +350,19 @@ func (c SlashCommandController) handleReqApproval(evt *socketmode.Event, clt *so
 
 		policyDoc, err := c.Service.GeneratePolicyFromAuditObj(cachedObject)
 		if err != nil {
-			logrus.Errorf("Error building policy. Err: %s", err.Error())
+			logrus.Errorf("Error building policy. Err: Err:%s", err.Error())
+			return
 		}
 
 		err = c.Service.CloudIdentityManager.PutPolicy(cloudAccountName, cachedObject.LoginRole, cachedObject.RequestId, string(policyDoc))
 		if err != nil {
 			logrus.Errorf("Error building policy. Err: %s", err.Error())
+			return
 		}
 	}
 
 	err = c.Service.Messenger.PostSimpleMessage(cachedObject.UserId, requesterMsgText, cachedObject.RequestId)
 	if err != nil {
-		logrus.WithField("func", "handleReqApproval").Errorf("Error Posting Mesage to Requesting User:%s", err.Error())
+		logrus.Errorf("Error Posting Mesage to Requesting User  Err:%s", err.Error())
 	}
 }
