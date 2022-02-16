@@ -51,13 +51,13 @@ func main() {
 
 	settings, err := settings.NewS3Config(cfg, os.Getenv("BOT_CONFIG_S3_KEY"), os.Getenv("BOT_CONFIG_S3_BUCKET"))
 	if err != nil {
-		logrus.Errorf("Unable get Config. Err: %s")
+		logrus.Errorf("Unable get Config. Err %s", err)
 		os.Exit(1)
 	}
 
 	client, err := connectToSlackViaSocketmode()
 	if err != nil {
-		logrus.Errorf("Unable to connect to slack. Err: %s")
+		logrus.Errorf("Unable to connect to slack. Err: %s", err)
 		os.Exit(1)
 	}
 
