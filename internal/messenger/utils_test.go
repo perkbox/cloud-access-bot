@@ -50,8 +50,7 @@ func Test_GetValuesFromSelectedOptions(t *testing.T) {
 
 func Test_MapToOptions(t *testing.T) {
 	vals := map[string]string{
-		"GetBucket":     "1",
-		"ReadSomething": "2",
+		"GetBucket": "1",
 	}
 
 	ExpectedOpts := Options{Options: []Option{
@@ -61,13 +60,6 @@ func Test_MapToOptions(t *testing.T) {
 				Text: "GetBucket",
 			},
 			Value: "1",
-		},
-		{
-			Text: Text{
-				Type: "Type",
-				Text: "ReadSomething",
-			},
-			Value: "2",
 		},
 	},
 	}
