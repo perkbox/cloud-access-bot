@@ -94,7 +94,7 @@ func (m *Messenger) GetUserIdsFromGroup(groups []string) ([]string, error) {
 	var approverIds []string
 	grp, err := m.SlackClient.GetUserGroups()
 	if err != nil {
-		return []string{}, fmt.Errorf("func:GetUserIdsFromGroup: error getting users from group %s", err.Error())
+		return nil, fmt.Errorf("func:GetUserIdsFromGroup: error getting users from group %s", err.Error())
 	}
 
 	for _, v := range grp {
