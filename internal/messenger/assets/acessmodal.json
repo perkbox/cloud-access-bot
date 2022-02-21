@@ -1,0 +1,177 @@
+{
+  "title": {
+    "type": "plain_text",
+    "text": "AWS Access Request"
+  },
+  "private_metadata" : "{{.PrivateMetadata}}",
+  "submit": {
+    "type": "plain_text",
+    "text": "Submit"
+  },
+  "blocks": [
+    {
+      "type": "input",
+      "block_id": "{{.RequestDescriptionId}}",
+      "label": {
+        "type": "plain_text",
+        "text": "Request Reason"
+      },
+      "element": {
+        "type": "plain_text_input",
+        "multiline": true,
+        "action_id": "{{.RequestDescriptionId}}"
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "{{.TimeInputID}}",
+      "element": {
+        "type": "plain_text_input",
+        "action_id": "{{.TimeInputID}}",
+        "initial_value": "60"
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Enter Time for Extended Permissions",
+        "emoji": true
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "{{.LoginRoleSelectorId}}",
+      "element": {
+        "action_id": "{{.LoginRoleSelectorId}}",
+        "type": "static_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Select your AWS Login Role"
+        },
+        "options": [
+          {{$r0 := counter}}
+          {{range .LoginRoles}}
+          {{if call $r0}}, {{end}}
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "{{.}}"
+            },
+            "value": "{{.}}"
+          }
+          {{end}}
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Select your AWS Login Role"
+      }
+    },
+    {
+      "type": "input",
+      "dispatch_action" : true,
+      "block_id": "{{.AccountSelectorId}}",
+      "element": {
+        "action_id": "{{.AccountSelectorId}}",
+        "type": "static_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Select an AWS Account"
+        },
+        "options": [
+          {{$r1 := counter}}
+          {{range .Accounts}}
+          {{if call $r1}}, {{end}}
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "{{.}}"
+            },
+            "value": "{{.}}"
+          }
+          {{end}}
+        ]
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Select AWS Account"
+      }
+    }
+    {{$c := counter}}
+    {{if call $c}}, {{end}}
+
+    {{if .IsIamService}}
+    {{if call $c}}, {{end}}
+    {
+      "type": "section",
+      "block_id": "{{.ServiceActionId}}",
+      "text": {
+        "type": "plain_text",
+        "text": "Pick AWS Services"
+      },
+      "accessory": {
+        "action_id": "{{.ServiceActionId}}",
+        "type": "external_select",
+        "min_query_length": 2,
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Select items"
+        }
+      }
+    }
+    {{end}}
+    {{if .IsActionSelector}}
+    {{if call $c}}, {{end}}
+    {
+      "type": "input",
+      "block_id": "{{.ActionsBlockId}}",
+      "element": {
+        "type": "multi_external_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Select an item"
+        },
+        "action_id": "{{.ActionsActionId}}"
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Select AWS Actions"
+      }
+    }
+    {{end}}
+    {{if .IsResourcesText}}
+    {{if call $c}}, {{end}}
+    {
+      "type": "input",
+      "block_id": "{{.ResourcesBlockId}}",
+      "element": {
+        "type": "plain_text_input",
+        "multiline": true,
+        "action_id": "{{.ResourcesActionId}}"
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Enter Resources"
+      }
+    }
+    {{end}}
+    {{if .IsExternalResourcesSelector}}
+    {{if call $c}}, {{end}}
+    {
+      "type": "input",
+      "block_id": "{{.ResourcesBlockId}}",
+      "element": {
+        "type": "multi_external_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Select an item"
+        },
+        "action_id": "{{.ResourcesActionId}}"
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Select AWS Resources"
+      }
+    }
+    {{end}}
+  ],
+  "type": "modal"
+}
