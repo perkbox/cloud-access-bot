@@ -36,18 +36,9 @@ func NewIAMClient(cfg aws.Config) *IAMProvider {
 }
 
 func (awsiam *IAMProvider) PutPolicy(accountName, roleName, policyName, policy string) error {
-	i := awsiam.Client
-	accountRoleArn, err := awsiam.Settings.GetRoleArn(accountName)
+	i, err := awsiam.assumeRoleWithAccountName(accountName)
 	if err != nil {
 		return err
-	}
-
-	if accountRoleArn != "" {
-		cfg, err := assumeRole(accountRoleArn, *awsiam.STSProvider)
-		if err != nil {
-			return fmt.Errorf("func:PutPolicy: Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
-		}
-		i = NewIAMClient(cfg).Client
 	}
 
 	_, err = i.PutRolePolicy(context.TODO(), &iam.PutRolePolicyInput{
@@ -66,18 +57,9 @@ func (awsiam *IAMProvider) PutPolicy(accountName, roleName, policyName, policy s
 }
 
 func (awsiam *IAMProvider) DeletePolicys(accountName, roleName string, InlinePolicysNames []string) error {
-	i := awsiam.Client
-	accountRoleArn, err := awsiam.Settings.GetRoleArn(accountName)
+	i, err := awsiam.assumeRoleWithAccountName(accountName)
 	if err != nil {
 		return err
-	}
-
-	if accountRoleArn != "" {
-		cfg, err := assumeRole(accountRoleArn, *awsiam.STSProvider)
-		if err != nil {
-			return fmt.Errorf("func:DeletePolicys: Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
-		}
-		i = NewIAMClient(cfg).Client
 	}
 
 	for _, policyName := range InlinePolicysNames {
@@ -94,18 +76,9 @@ func (awsiam *IAMProvider) DeletePolicys(accountName, roleName string, InlinePol
 }
 
 func (awsiam *IAMProvider) GetCloudUserId(accountName string, roleName string) (string, error) {
-	i := awsiam.Client
-	accountRoleArn, err := awsiam.Settings.GetRoleArn(accountName)
+	i, err := awsiam.assumeRoleWithAccountName(accountName)
 	if err != nil {
-		return "", fmt.Errorf("func:GetCloudUserId ErrorGettign Role ARN Err: %s", err)
-	}
-
-	if accountRoleArn != "" {
-		cfg, err := assumeRole(accountRoleArn, *awsiam.STSProvider)
-		if err != nil {
-			return "", fmt.Errorf("func:GetCloudUserId: Error assuming role %s. AWS Error: %s", accountRoleArn, err.Error())
-		}
-		i = NewIAMClient(cfg).Client
+		return "", err
 	}
 
 	roleOutput, err := i.GetRole(context.TODO(), &iam.GetRoleInput{RoleName: aws.String(roleName)}, func(o *iam.Options) {
@@ -120,18 +93,9 @@ func (awsiam *IAMProvider) GetCloudUserId(accountName string, roleName string) (
 
 func (awsiam *IAMProvider) FindPolicysForRole(accountName, roleName string) (map[string]string, error) {
 	inlinePolicys := make(map[string]string)
-	i := awsiam.Client
-	accountRoleArn, err := awsiam.Settings.GetRoleArn(accountName)
+	i, err := awsiam.assumeRoleWithAccountName(accountName)
 	if err != nil {
 		return nil, err
-	}
-
-	if accountRoleArn != "" {
-		cfg, err := assumeRole(accountRoleArn, *awsiam.STSProvider)
-		if err != nil {
-			return nil, fmt.Errorf("func:FindPolicysForRole: Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
-		}
-		i = NewIAMClient(cfg).Client
 	}
 
 	//GET all inline Policy's on the role
@@ -157,4 +121,22 @@ func (awsiam *IAMProvider) FindPolicysForRole(accountName, roleName string) (map
 	}
 
 	return inlinePolicys, err
+}
+
+func (awsiam *IAMProvider) assumeRoleWithAccountName(accountName string) (IAMClientInterface, error) {
+	i := awsiam.Client
+	accountRoleArn, err := awsiam.Settings.GetRoleArn(accountName)
+	if err != nil {
+		return nil, err
+	}
+
+	if accountRoleArn != "" {
+		cfg, err := assumeRole(accountRoleArn, *awsiam.STSProvider)
+		if err != nil {
+			return nil, fmt.Errorf("func:assumeRoleWithAccountName: Error assuming role %s.  AWS Error: %s", accountRoleArn, err.Error())
+		}
+		i = NewIAMClient(cfg).Client
+	}
+
+	return i, nil
 }
