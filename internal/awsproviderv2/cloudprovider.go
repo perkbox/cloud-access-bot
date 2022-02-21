@@ -47,8 +47,10 @@ func (c *ResourceFinder) ResourceFinder(service string, accountName string) ([]s
 	)
 	if accountName != "" {
 		roleArn, err = c.Settings.GetRoleArn(accountName)
-		logrus.Errorf("error fetching role for account %s Err: %s", accountName, err.Error())
-		return nil, false
+		if err != nil {
+			logrus.Errorf("error fetching role for account %s Err: %s", accountName, err.Error())
+			return nil, false
+		}
 	}
 
 	switch service {
