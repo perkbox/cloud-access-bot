@@ -2,6 +2,7 @@ package awsproviderv2
 
 import (
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/perkbox/cloud-access-bot/internal/settings"
 	"github.com/sirupsen/logrus"
 )
@@ -10,7 +11,6 @@ import (
 type ResourceFinder struct {
 	*S3Provider
 	*DynamodbProvider
-	*Validator
 	settings.Settings
 }
 
@@ -25,12 +25,9 @@ func NewAwsResourceFinder(cfg aws.Config, config settings.Settings) *ResourceFin
 	Dynamo.STSProvider = stsClient
 	Dynamo.Regions = config.Regions
 
-	Vali := NewValidator()
-
 	return &ResourceFinder{
 		S3Provider:       S3,
 		DynamodbProvider: Dynamo,
-		Validator:        Vali,
 		Settings:         config,
 	}
 }
@@ -62,4 +59,15 @@ func (c *ResourceFinder) ResourceFinder(service string, accountName string) ([]s
 		return bucketNames, true
 	}
 	return nil, false
+}
+
+func (v *ResourceFinder) ValidateResourcesFormat(resources []string) []string {
+	var failedResources []string
+	for _, r := range resources {
+		if !arn.IsARN(r) && r != "" {
+			failedResources = append(failedResources, r)
+		}
+	}
+
+	return failedResources
 }
