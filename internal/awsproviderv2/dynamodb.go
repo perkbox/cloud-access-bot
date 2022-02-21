@@ -24,7 +24,6 @@ func NewDynamoDBCClient(cfg aws.Config) *DynamodbProvider {
 
 type dynamoClientInterface interface {
 	dynamodb.ListTablesAPIClient
-	dynamodb.DescribeTableAPIClient
 }
 
 func (dyn *DynamodbProvider) GetDynamoTableNames(accountRoleArn string) []string {

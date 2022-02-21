@@ -8,22 +8,22 @@ import (
 )
 
 func Test_SliceToOptions(t *testing.T) {
-	InputSlice := []string{"GetBucket", "ReadSomething"}
+	InputSlice := []string{"getBucket", "readSomething"}
 
 	ExpectedOpts := Options{Options: []Option{
 		{
 			Text: Text{
 				Type: "Type",
-				Text: "GetBucket",
+				Text: "getBucket",
 			},
-			Value: "GetBucket",
+			Value: "getBucket",
 		},
 		{
 			Text: Text{
 				Type: "Type",
-				Text: "ReadSomething",
+				Text: "readSomething",
 			},
-			Value: "ReadSomething",
+			Value: "readSomething",
 		},
 	},
 	}

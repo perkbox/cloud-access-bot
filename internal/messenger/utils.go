@@ -65,8 +65,7 @@ func MapToOptions(slice map[string]string, TextType string) Options {
 		})
 	}
 
-	options := Options{Options: opts}
-	return options
+	return Options{Options: opts}
 }
 
 func renderTemplate(fs fs.FS, file string, args interface{}) (bytes.Buffer, error) {

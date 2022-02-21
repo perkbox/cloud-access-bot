@@ -156,10 +156,9 @@ func (i *IamPolicyMan) generateArns(AccountId string, Services []string, Resourc
 }
 
 func wildcardARN(arn string) string {
-	if arn != "" {
-		if !strings.Contains(arn, "/*") {
-			return fmt.Sprintf("%s/*", arn)
-		}
+	if arn == "" || strings.Contains(arn, "/*") {
+		return ""
 	}
-	return ""
+
+	return fmt.Sprintf("%s/*", arn)
 }

@@ -3,6 +3,7 @@ package awsproviderv2
 import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/perkbox/cloud-access-bot/internal/settings"
+	"github.com/sirupsen/logrus"
 )
 
 // ResourceFinder is the New service based implementation of cloudprovider to decouple the data logic from the application code
@@ -40,7 +41,15 @@ func NewAwsResourceFinder(cfg aws.Config, config settings.Settings) *ResourceFin
 // GetNamesHashMap Function to get resource names as a map[string]string
 // bool    An easy way to see if the Aws Service has a resource finder
 func (c *ResourceFinder) ResourceFinder(service string, accountName string) ([]string, bool) {
-	roleArn, _ := c.Settings.GetRoleArn(accountName)
+	var (
+		roleArn string
+		err     error
+	)
+	if accountName != "" {
+		roleArn, err = c.Settings.GetRoleArn(accountName)
+		logrus.Errorf("error fetching role for account %s Err: %s", accountName, err.Error())
+		return nil, false
+	}
 
 	switch service {
 	case "dynamodb":

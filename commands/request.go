@@ -70,12 +70,12 @@ func NewRequestCommandHandler(cfg settings.Settings, service *internal.Service, 
 	// Approve or Deny Permission Request
 	// Approve
 	c.EventHandler.HandleInteractionBlockAction(
-		"approve",
+		messenger.ApprovedActionID,
 		c.handleReqApproval,
 	)
 	// Deny
 	c.EventHandler.HandleInteractionBlockAction(
-		"deny",
+		messenger.DenyActionID,
 		c.handleReqApproval,
 	)
 
@@ -83,40 +83,38 @@ func NewRequestCommandHandler(cfg settings.Settings, service *internal.Service, 
 }
 
 func (c SlashCommandController) SuggestServices(evt *socketmode.Event, clt *socketmode.Client) {
-	var paylaodOpts messenger.Options
-	suggestCallabck, ok := evt.Data.(slack.InteractionCallback)
+	var payloadOpts messenger.Options
+	suggestCallback, ok := evt.Data.(slack.InteractionCallback)
 	if !ok {
 		logrus.Errorf("ERROR converting event to Slash Command: %v", ok)
 		return
 	}
 
-	switch suggestCallabck.ActionID {
+	switch suggestCallback.ActionID {
 	case messenger.IamServicesSelectorActionID:
-		paylaodOpts = messenger.SliceToOptions(c.Service.GetServicesWithFilter(strings.ToLower(suggestCallabck.Value)), "plain_text")
+		payloadOpts = messenger.SliceToOptions(c.Service.GetServicesWithFilter(strings.ToLower(suggestCallback.Value)), "plain_text")
 
 	case messenger.IamServiceActionSelectorActionID:
-		selService := strings.Split(suggestCallabck.BlockID, ":")[1]
-		paylaodOpts = messenger.MapToOptions(c.Service.GetActionsWithFilter(selService, strings.ToLower(suggestCallabck.Value)), "plain_text")
+		selService := strings.Split(suggestCallback.BlockID, ":")[1]
+		payloadOpts = messenger.MapToOptions(c.Service.GetActionsWithFilter(selService, strings.ToLower(suggestCallback.Value)), "plain_text")
 
 	case messenger.IamResourcesSelectorActionID:
-		selService := strings.Split(suggestCallabck.BlockID, ":")[1]
-		resources, _ := c.Service.GetCloudResourcesForService(suggestCallabck.Value, selService, suggestCallabck.View.PrivateMetadata)
-		paylaodOpts = messenger.MapToOptions(resources, "plain_text")
+		selService := strings.Split(suggestCallback.BlockID, ":")[1]
+		resources, _ := c.Service.GetCloudResourcesForService(suggestCallback.Value, selService, suggestCallback.View.PrivateMetadata)
+		payloadOpts = messenger.MapToOptions(resources, "plain_text")
 	default:
 		logrus.Warnf("Unknown action")
 		return
 	}
 
-	payload := socketmode.Response{
+	clt.Send(socketmode.Response{
 		EnvelopeID: evt.Request.EnvelopeID,
-		Payload:    paylaodOpts,
-	}
-
-	clt.Send(payload)
+		Payload:    payloadOpts,
+	})
 }
 
 func (c SlashCommandController) updateViewAccountSelect(evt *socketmode.Event, clt *socketmode.Client) {
-	actionCallabck, ok := evt.Data.(slack.InteractionCallback)
+	actionCallback, ok := evt.Data.(slack.InteractionCallback)
 	if !ok {
 		logrus.Errorf("Error converting event to Update View")
 		return
@@ -131,7 +129,7 @@ func (c SlashCommandController) updateViewAccountSelect(evt *socketmode.Event, c
 		return
 	}
 
-	_, err = client.UpdateView(viewBody, actionCallabck.View.ExternalID, "", actionCallabck.View.ID)
+	_, err = client.UpdateView(viewBody, actionCallback.View.ExternalID, "", actionCallback.View.ID)
 	if err != nil {
 		logrus.Errorf("Error Updating View.. Err: %s", err.Error())
 		return
@@ -139,15 +137,15 @@ func (c SlashCommandController) updateViewAccountSelect(evt *socketmode.Event, c
 }
 
 func (c SlashCommandController) updateViewServices(evt *socketmode.Event, clt *socketmode.Client) {
-	actionCallabck, ok := evt.Data.(slack.InteractionCallback)
+	actionCallback, ok := evt.Data.(slack.InteractionCallback)
 	if !ok {
 		logrus.Errorf("ERROR converting event to Update View")
 		return
 	}
 	client := clt.GetApiClient()
 
-	selService := actionCallabck.View.State.Values[messenger.IamServicesSelectorActionID][messenger.IamServicesSelectorActionID].SelectedOption.Value
-	selAccount := actionCallabck.View.State.Values[messenger.AccountSelectorActionId][messenger.AccountSelectorActionId].SelectedOption.Value
+	selService := actionCallback.View.State.Values[messenger.IamServicesSelectorActionID][messenger.IamServicesSelectorActionID].SelectedOption.Value
+	selAccount := actionCallback.View.State.Values[messenger.AccountSelectorActionId][messenger.AccountSelectorActionId].SelectedOption.Value
 	clt.Ack(*evt.Request)
 
 	_, hasResourceFinder := c.Service.GetCloudResourcesForService("", selService, selAccount)
@@ -157,9 +155,9 @@ func (c SlashCommandController) updateViewServices(evt *socketmode.Event, clt *s
 		return
 	}
 
-	_, err = client.UpdateView(viewBody, actionCallabck.View.ExternalID, "", actionCallabck.View.ID)
+	_, err = client.UpdateView(viewBody, actionCallback.View.ExternalID, "", actionCallback.View.ID)
 	if err != nil {
-		logrus.WithField("User", actionCallabck.User.Name).Errorf("Error Updating View Err: %s", err.Error())
+		logrus.WithField("User", actionCallback.User.Name).Errorf("Error Updating View Err: %s", err.Error())
 		return
 	}
 }
@@ -307,14 +305,14 @@ func (c SlashCommandController) handleReqApproval(evt *socketmode.Event, clt *so
 		requesterMsgText string
 	)
 
-	approvalCallabck, ok := evt.Data.(slack.InteractionCallback)
+	approvalCallback, ok := evt.Data.(slack.InteractionCallback)
 	if !ok {
 		logrus.Errorf("ERROR converting event to Slash Command")
 		return
 	}
 
-	requestId := strings.Split(approvalCallabck.ActionCallback.BlockActions[0].Value, ":")[0]
-	userId := strings.Split(approvalCallabck.ActionCallback.BlockActions[0].Value, ":")[1]
+	requestId := strings.Split(approvalCallback.ActionCallback.BlockActions[0].Value, ":")[0]
+	userId := strings.Split(approvalCallback.ActionCallback.BlockActions[0].Value, ":")[1]
 
 	cachedObject, err := c.Service.GetAuditObj(userId, requestId)
 	if err != nil {
@@ -324,16 +322,16 @@ func (c SlashCommandController) handleReqApproval(evt *socketmode.Event, clt *so
 
 	clt.Ack(*evt.Request)
 
-	switch approvalCallabck.ActionCallback.BlockActions[0].ActionID {
-	case "approve":
-		approverMsgText = fmt.Sprintf(":white_check_mark: Request Approved by <@%s>", approvalCallabck.User.ID)
-		err := c.Service.Repo.UpdateApprovingUser(cachedObject.UserId, cachedObject.RequestId, approvalCallabck.User.ID)
+	switch approvalCallback.ActionCallback.BlockActions[0].ActionID {
+	case messenger.ApprovedActionID:
+		approverMsgText = fmt.Sprintf(":white_check_mark: Request Approved by <@%s>", approvalCallback.User.ID)
+		err := c.Service.Repo.UpdateApprovingUser(cachedObject.UserId, cachedObject.RequestId, approvalCallback.User.ID)
 		if err != nil {
 			logrus.Errorf("Error Updating Requesting User %s", err.Error())
 		}
 		requesterMsgText = "Request Approved, Policy Applied"
-	case "deny":
-		approverMsgText = fmt.Sprintf(":no_entry_sign: Request Denied by  <@%s>", approvalCallabck.User.ID)
+	case messenger.DenyActionID:
+		approverMsgText = fmt.Sprintf(":no_entry_sign: Request Denied by  <@%s>", approvalCallback.User.ID)
 		requesterMsgText = "Request Denied, Please raise a new request"
 	}
 
@@ -346,7 +344,7 @@ func (c SlashCommandController) handleReqApproval(evt *socketmode.Event, clt *so
 	cloudAccountName := c.Settings.GetAccountNameAccountNum(cachedObject.AccountId)
 	c.Service.FindExpiredPermissions(cloudAccountName, cachedObject.LoginRole, true)
 
-	if approvalCallabck.ActionCallback.BlockActions[0].ActionID == "approve" {
+	if approvalCallback.ActionCallback.BlockActions[0].ActionID == "approve" {
 
 		policyDoc, err := c.Service.GeneratePolicyFromAuditObj(cachedObject)
 		if err != nil {

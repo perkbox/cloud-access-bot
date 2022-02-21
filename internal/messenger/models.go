@@ -15,6 +15,8 @@ const (
 	AccountSelectorActionId          = "awsAccountSelector"
 	LoginRoleSelector                = "awsLoginRoleSelector"
 	TimeInputID                      = "awsTimeInput"
+	ApprovedActionID                 = "approve"
+	DenyActionID                     = "deny"
 )
 
 //go:embed assets/*
@@ -61,32 +63,36 @@ type Text struct {
 
 //Approval Message Template vars
 type approvalBlockVars struct {
-	UserId      string              `json:"userId"`
-	RequestId   string              `json:"requestId"`
-	Description string              `json:"description"`
-	CloudUserId string              `json:"cloudUserId"`
-	LoginRole   string              `json:"loginRole"`
-	AccountId   string              `json:"accountId"`
-	Duration    string              `json:"duration"`
-	Services    []string            `json:"services"`
-	Actions     map[string][]string `json:"actions"`
-	Resources   map[string][]string `json:"resources"`
-	GotResponse bool                `json:"gotResponse"`
-	ResponseMSG string              `json:"responseMsg"`
+	UserId          string              `json:"userId"`
+	RequestId       string              `json:"requestId"`
+	Description     string              `json:"description"`
+	CloudUserId     string              `json:"cloudUserId"`
+	LoginRole       string              `json:"loginRole"`
+	AccountId       string              `json:"accountId"`
+	Duration        string              `json:"duration"`
+	Services        []string            `json:"services"`
+	Actions         map[string][]string `json:"actions"`
+	Resources       map[string][]string `json:"resources"`
+	GotResponse     bool                `json:"gotResponse"`
+	ResponseMSG     string              `json:"responseMsg"`
+	ApproveActionId string              `json:"approveActionId"`
+	DenyActionId    string              `json:"denyActionId"`
 }
 
 // auditObjtoApprovalBlockVars Type conversion function for rendering APPROVAL MESSAGE
 func auditObjtoApprovalBlockVars(auditObj internal.AuditObject) approvalBlockVars {
 	return approvalBlockVars{
-		UserId:      auditObj.UserId,
-		RequestId:   auditObj.RequestId,
-		Description: auditObj.Description,
-		CloudUserId: auditObj.CloudUserId,
-		LoginRole:   auditObj.LoginRole,
-		AccountId:   auditObj.AccountId,
-		Duration:    auditObj.Duration,
-		Services:    auditObj.Services,
-		Actions:     auditObj.Actions,
-		Resources:   auditObj.Resources,
+		UserId:          auditObj.UserId,
+		RequestId:       auditObj.RequestId,
+		Description:     auditObj.Description,
+		CloudUserId:     auditObj.CloudUserId,
+		LoginRole:       auditObj.LoginRole,
+		AccountId:       auditObj.AccountId,
+		Duration:        auditObj.Duration,
+		Services:        auditObj.Services,
+		Actions:         auditObj.Actions,
+		Resources:       auditObj.Resources,
+		ApproveActionId: ApprovedActionID,
+		DenyActionId:    DenyActionID,
 	}
 }

@@ -17,5 +17,8 @@ func (s S3Mock) ListBuckets(ctx context.Context, params *s3.ListBucketsInput, op
 		{
 			Name: aws.String("BucketA"),
 		},
+		{
+			Name: aws.String("BucketB"),
+		},
 	}}, nil
 }
