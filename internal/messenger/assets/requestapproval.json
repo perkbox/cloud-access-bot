@@ -69,7 +69,7 @@
             "text": "Approve"
           },
           "style": "primary",
-          "action_id": "approve",
+          "action_id": "{{ .ApproveActionId }}",
           "value": "{{ .RequestId }}:{{ .UserId }}"
         },
         {
@@ -80,7 +80,7 @@
             "text": "Deny"
           },
           "style": "danger",
-          "action_id": "deny",
+          "action_id": "{{ .DenyActionId }}",
           "value": "{{ .RequestId }}:{{ .UserId }}"
         }
       ]

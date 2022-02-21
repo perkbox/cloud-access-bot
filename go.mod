@@ -15,7 +15,9 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/iam v1.10.1
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.17.0
 	github.com/aws/aws-sdk-go-v2/service/sts v1.8.0
+	github.com/aws/smithy-go v1.8.1
 	github.com/banzaicloud/logrus-runtime-formatter v0.0.0-20190729070250-5ae5475bae5e
+	github.com/google/go-cmp v0.5.6
 	github.com/joho/godotenv v1.4.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.8.1
@@ -33,7 +35,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.4.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.8.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sso v1.5.0 // indirect
-	github.com/aws/smithy-go v1.8.1 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect

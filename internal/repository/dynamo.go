@@ -46,8 +46,7 @@ func (r *DynamodbRepo) UpdateApprovingUser(UserID, RequestId, approvingUser stri
 		UpdateExpression: aws.String("set ApprovingUser = :a "),
 	}
 
-	_, err := r.Client.UpdateItem(context.TODO(), updateInput)
-	if err != nil {
+	if _, err := r.Client.UpdateItem(context.TODO(), updateInput); err != nil {
 		return fmt.Errorf("func:UpdateApprovingUser: error Running DynamoDB Update  %w", err)
 	}
 	return nil
@@ -67,11 +66,10 @@ func (r *DynamodbRepo) QueryAuditObjs(UserID string) ([]internal.AuditObject, er
 		return []internal.AuditObject{}, fmt.Errorf("func:QueryAuditObjs: error running DynamoDb Query response: %w", err)
 	}
 
-	var records []internal.AuditObject
+	records := make([]internal.AuditObject, len(respitems.Items))
 	for _, item := range respitems.Items {
 		var itemRecord repoAuditObject
-		err = attributevalue.UnmarshalMap(item, &itemRecord)
-		if err != nil {
+		if err := attributevalue.UnmarshalMap(item, &itemRecord); err != nil {
 			return []internal.AuditObject{}, fmt.Errorf("func:QueryAuditObjs: error unmarshalling response: %w", err)
 		}
 		records = append(records, itemRecord.convertFromRepoObject())
@@ -94,8 +92,7 @@ func (r *DynamodbRepo) GetAuditObj(UserID, RequestId string) (internal.AuditObje
 	}
 
 	var record repoAuditObject
-	err = attributevalue.UnmarshalMap(item.Item, &record)
-	if err != nil {
+	if err := attributevalue.UnmarshalMap(item.Item, &record); err != nil {
 		return internal.AuditObject{}, fmt.Errorf("func:GetAuditObj: error unmarshalling dynamoDb response: %w", err)
 	}
 
@@ -109,12 +106,10 @@ func (r *DynamodbRepo) SetAuditObj(requestObj internal.AuditObject) error {
 		return fmt.Errorf("func:SetAuditObj: error marshalling response: %w", err)
 	}
 
-	_, err = r.Client.PutItem(context.TODO(), &dynamodb.PutItemInput{
-
+	if _, err := r.Client.PutItem(context.TODO(), &dynamodb.PutItemInput{
 		Item:      data,
 		TableName: aws.String(r.TableName),
-	})
-	if err != nil {
+	}); err != nil {
 		return fmt.Errorf("func:SetAuditObj: error Putting item into DynamoDb: %w", err)
 	}
 

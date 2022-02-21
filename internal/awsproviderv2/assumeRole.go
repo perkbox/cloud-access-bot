@@ -9,7 +9,7 @@ import (
 )
 
 func assumeRole(accountRoleArn string, stsprovider STSProvider) (aws.Config, error) {
-	cnf, err := config.LoadDefaultConfig(context.TODO(),
+	return config.LoadDefaultConfig(context.TODO(),
 		config.WithCredentialsProvider(aws.NewCredentialsCache(
 			stscreds.NewAssumeRoleProvider(
 				stsprovider.Client,
@@ -17,9 +17,4 @@ func assumeRole(accountRoleArn string, stsprovider STSProvider) (aws.Config, err
 			)),
 		),
 	)
-	if err != nil {
-		return aws.Config{}, err
-	}
-
-	return cnf, nil
 }

@@ -25,23 +25,23 @@ func NewMessenger(Client *slack.Client) *Messenger {
 func (m *Messenger) GenerateModal(modalType string, Accounts, LoginRoles []string, hasResourceFinder bool, privateMetadata string, selectedService string) (slack.ModalViewRequest, error) {
 	switch modalType {
 	case "firstView":
-		firstViewtmplvals := Template{
+		firstViewTmplVals := Template{
 			IsIamService: false,
 			Accounts:     Accounts,
 			LoginRoles:   LoginRoles,
 		}
-		return GetRequestAccessModal(firstViewtmplvals)
+		return GetRequestAccessModal(firstViewTmplVals)
 
 	case "accountSelectView":
-		accountSelectViewtmplvals := Template{
+		accountSelectViewTmplVals := Template{
 			IsIamService: true,
 			Accounts:     Accounts,
 			LoginRoles:   LoginRoles,
 		}
-		return GetRequestAccessModal(accountSelectViewtmplvals)
+		return GetRequestAccessModal(accountSelectViewTmplVals)
 
 	case "servicesView":
-		servicesViewtmplVals := Template{
+		servicesViewTmplVals := Template{
 			IsIamService:     true,
 			IsActionSelector: true,
 			IsResourcesText:  true,
@@ -51,11 +51,11 @@ func (m *Messenger) GenerateModal(modalType string, Accounts, LoginRoles []strin
 			LoginRoles:       LoginRoles,
 		}
 		if hasResourceFinder {
-			servicesViewtmplVals.IsExternalResourcesSelector = true
-			servicesViewtmplVals.IsResourcesText = false
+			servicesViewTmplVals.IsExternalResourcesSelector = true
+			servicesViewTmplVals.IsResourcesText = false
 		}
 
-		return GetRequestAccessModal(servicesViewtmplVals)
+		return GetRequestAccessModal(servicesViewTmplVals)
 	}
 
 	return slack.ModalViewRequest{}, nil
@@ -94,7 +94,7 @@ func (m *Messenger) GetUserIdsFromGroup(groups []string) ([]string, error) {
 	var approverIds []string
 	grp, err := m.SlackClient.GetUserGroups()
 	if err != nil {
-		return []string{}, fmt.Errorf("func:GetUserIdsFromGroup: error getting users from group %w", err)
+		return []string{}, fmt.Errorf("func:GetUserIdsFromGroup: error getting users from group %s", err.Error())
 	}
 
 	for _, v := range grp {
