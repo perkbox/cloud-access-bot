@@ -1,0 +1,101 @@
+{
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Requesting more access to {{ .AccountId }} *"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Description:*\n {{ .Description }}  \n "
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*Requesting User:*\n <@{{ .UserId }}>"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Login Role:*\n {{ .LoginRole }}"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*Service:* \n {{range .Services}} {{.}}\n {{end}}"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Actions:*\n {{range $index, $element := .Actions}} *{{$index}}* \n {{range $element}} - {{.}}\n {{end}}{{end}}"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*Resources:*\n  {{range $index, $element := .Resources}} *{{$index}}* \n {{range $element}}  - {{.}}\n {{end}}{{end}}"
+
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Duration:*\n {{ .Duration }}"
+        }
+      ]
+    },
+    {{if not .GotResponse}}
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "emoji": true,
+            "text": "Approve"
+          },
+          "style": "primary",
+          "action_id": "{{ .ApproveActionId }}",
+          "value": "{{ .RequestId }}:{{ .UserId }}"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "emoji": true,
+            "text": "Deny"
+          },
+          "style": "danger",
+          "action_id": "{{ .DenyActionId }}",
+          "value": "{{ .RequestId }}:{{ .UserId }}"
+        }
+      ]
+    }
+    {{end}}
+    {{if .ResponseMSG}}
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "{{ .ResponseMSG }}"
+        }
+      ]
+    }
+    {{end}}
+  ]
+}
