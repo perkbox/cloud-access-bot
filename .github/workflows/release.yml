@@ -25,7 +25,7 @@ jobs:
         with:
           tags: |
             perkbox/cloud-access-bot:${{ steps.get_version.outputs.VERSION }}
-          push: startsWith(github.ref, 'refs/tags/')
+          push: true
 
 
   build-go-binarys:
