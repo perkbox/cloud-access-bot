@@ -1,5 +1,8 @@
 .idea
 .DS_Store
+bin/
+build/
+dist/
 
 # Binaries for programs and plugins
 cloud-access-bot
