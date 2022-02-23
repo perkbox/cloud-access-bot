@@ -1,44 +1,8 @@
-name: Lint, Test and Coverage
+name: Coverage CodeCov
 
 on: [push, pull_request]
 
-permissions:
-  contents: read
-  pull-requests: read
-
 jobs:
-  build-test:
-    name: build-test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Go 1.17
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.17
-          
-      - uses: actions/checkout@v2
-        
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          push: false
-
-      - name: Run Go Build
-        run: | 
-          go build .
-
-  golangci:
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: latest
-          only-new-issues: true
-
   codecov:
     name: codecov
     runs-on: ubuntu-latest
