@@ -82,7 +82,7 @@ func NewRequestCommandHandler(cfg settings.Settings, service *internal.Service, 
 	return c
 }
 
-func (c SlashCommandController) SuggestServices(evt *socketmode.Event, clt *socketmode.Client) {
+func (c *SlashCommandController) SuggestServices(evt *socketmode.Event, clt *socketmode.Client) {
 	var payloadOpts messenger.Options
 	suggestCallback, ok := evt.Data.(slack.InteractionCallback)
 	if !ok {
@@ -113,7 +113,7 @@ func (c SlashCommandController) SuggestServices(evt *socketmode.Event, clt *sock
 	})
 }
 
-func (c SlashCommandController) updateViewAccountSelect(evt *socketmode.Event, clt *socketmode.Client) {
+func (c *SlashCommandController) updateViewAccountSelect(evt *socketmode.Event, clt *socketmode.Client) {
 	actionCallback, ok := evt.Data.(slack.InteractionCallback)
 	if !ok {
 		logrus.Errorf("Error converting event to Update View")
@@ -136,7 +136,7 @@ func (c SlashCommandController) updateViewAccountSelect(evt *socketmode.Event, c
 	}
 }
 
-func (c SlashCommandController) updateViewServices(evt *socketmode.Event, clt *socketmode.Client) {
+func (c *SlashCommandController) updateViewServices(evt *socketmode.Event, clt *socketmode.Client) {
 	actionCallback, ok := evt.Data.(slack.InteractionCallback)
 	if !ok {
 		logrus.Errorf("ERROR converting event to Update View")
@@ -162,7 +162,7 @@ func (c SlashCommandController) updateViewServices(evt *socketmode.Event, clt *s
 	}
 }
 
-func (c SlashCommandController) handleRequestStart(evt *socketmode.Event, clt *socketmode.Client) {
+func (c *SlashCommandController) handleRequestStart(evt *socketmode.Event, clt *socketmode.Client) {
 	// we need to cast our socket mode.Event into a Slash Command
 	command, ok := evt.Data.(slack.SlashCommand)
 	if !ok {
@@ -190,7 +190,7 @@ func (c SlashCommandController) handleRequestStart(evt *socketmode.Event, clt *s
 	}
 }
 
-func (c SlashCommandController) requestModelSubmitted(evt *socketmode.Event, clt *socketmode.Client) {
+func (c *SlashCommandController) requestModelSubmitted(evt *socketmode.Event, clt *socketmode.Client) {
 	var (
 		approvalMsgs    []internal.ApprovalMsgObj
 		policyResources []string
@@ -299,7 +299,7 @@ func (c SlashCommandController) requestModelSubmitted(evt *socketmode.Event, clt
 	}
 }
 
-func (c SlashCommandController) handleReqApproval(evt *socketmode.Event, clt *socketmode.Client) {
+func (c *SlashCommandController) handleReqApproval(evt *socketmode.Event, clt *socketmode.Client) {
 	var (
 		approverMsgText  string
 		requesterMsgText string
