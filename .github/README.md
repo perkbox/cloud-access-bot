@@ -56,6 +56,19 @@ https://user-images.githubusercontent.com/26804184/149273215-3af8f8b5-f421-45c1-
 - [Credits](#credits)
 
 
+## DockerHub
+
+New docker images are built on every release of the code the dockerhub repo can be found 
+
+https://hub.docker.com/r/perkbox/cloud-access-bot
+
+or if using an image just by 
+
+```
+perkbox/cloud-access-bot
+```
+
+
 ## :nut_and_bolt: Installation
 
 The preferred installation of the Cloud Access Bot is to run the container within an container orchestrion platform, within Perkbox are using ECS Fargate to host the cloud access bot.
