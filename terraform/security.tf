@@ -22,11 +22,11 @@ resource "aws_secretsmanager_secret_version" "secrets_store" {
 }
 
 resource "aws_security_group" "request_access" {
-  name        = "ecs-${local.name}"
+  name        = "fargate-${local.name}"
   description = "Security group for Request Accessn Bot in ECS"
   vpc_id      = var.aws_vpc_id
 
-  tags = merge(var.tags, { Name = "ecs-${local.name}" })
+  tags = merge(var.tags, { Name = "fargate-${local.name}" })
 }
 
 

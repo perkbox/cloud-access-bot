@@ -6,5 +6,16 @@ module "dynamodb_table" {
   hash_key  = "PK"
   range_key = "SK"
 
+  attributes = [
+    {
+      name = "PK"
+      type = "S"
+    },
+    {
+      name = "SK"
+      type = "S"
+    }
+  ]
+
   tags = var.tags
 }

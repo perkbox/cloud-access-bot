@@ -1,6 +1,6 @@
-module "s3-bucket" {
+module "s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "2.11.1"
+  version = "2.14.1"
 
   bucket = "cloud-access-bot-config"
 
@@ -11,8 +11,10 @@ module "s3-bucket" {
   }
 
   server_side_encryption_configuration = {
-    apply_server_side_encryption_by_default = {
-      sse_algorithm = "AES256"
+    rule = {
+      apply_server_side_encryption_by_default = {
+        sse_algorithm = "AES256"
+      }
     }
   }
 

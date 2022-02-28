@@ -3,7 +3,7 @@
 module "request_access_task_execution_role" {
   source = "./tf-mod-service-role"
 
-  role_name = "ecs-request-access-task-execution"
+  role_name = "fargate-request-access-task-execution"
   services  = ["ecs-tasks"]
   policies = concat(
     [
@@ -17,7 +17,7 @@ module "request_access_task_execution_role" {
     "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
   ]
 
-  tag_stack = var.stack
+  tags = var.tags
 }
 
 # ECS task role for grafana ECS service. This determines the AWS permissions the container running in ECS
@@ -26,7 +26,7 @@ module "request_access_task_execution_role" {
 module "request_access_task_role" {
   source = "./tf-mod-service-role"
 
-  role_name = "ecs-request-access-task"
+  role_name = "fargate-request-access-task"
   services  = ["ecs-tasks"]
   policies = concat(
     [
@@ -38,5 +38,5 @@ module "request_access_task_role" {
   )
   policy_attachments = []
 
-  tag_stack = var.stack
+  tags = var.tags
 }

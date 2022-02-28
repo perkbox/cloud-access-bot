@@ -43,7 +43,7 @@ resource "aws_ecs_service" "cloud_access_bot_service" {
   name                = local.name
   task_definition     = aws_ecs_task_definition.cloud_access_bot_task.arn
   desired_count       = 1
-  cluster             = data.aws_ecs_cluster.request_bot_main.arn
+  cluster             = aws_ecs_cluster.request_bot_main.arn
   launch_type         = "FARGATE"
   scheduling_strategy = "REPLICA"
 

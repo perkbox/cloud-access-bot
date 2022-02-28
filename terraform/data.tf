@@ -15,8 +15,8 @@ data "aws_iam_policy_document" "request_access_task" {
       "s3:*"
     ]
     resources = [
-      module.config_bucket.s3_bucket.arn,
-      "${module.config_bucket.s3_bucket.arn}/*"
+      module.s3_bucket.s3_bucket_arn,
+      "${module.s3_bucket.s3_bucket_arn}/*"
     ]
   }
 }

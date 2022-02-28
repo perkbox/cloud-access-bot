@@ -105,7 +105,7 @@ For the list of OAuth Scopes a written list of them are
 Please see the terraform module within the repo as a quick start to demo the Slack bot in your own environment.
 All required documentation can be found in the module.
 
-[Terraform](../terrraform/)
+[Terraform](../terraform/)
 
 The individual required resources can be found in the section [Required AWS Resources](#required-aws-resources).
 
