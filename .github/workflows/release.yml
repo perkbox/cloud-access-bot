@@ -25,6 +25,7 @@ jobs:
         with:
           tags: |
             perkbox/cloud-access-bot:${{ steps.get_version.outputs.VERSION }}
+            perkbox/cloud-access-bot:latest
           push: true
 
 
