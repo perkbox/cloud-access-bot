@@ -3,6 +3,7 @@
 bin/
 build/
 dist/
+dist-release-arti/
 
 # Binaries for programs and plugins
 cloud-access-bot
