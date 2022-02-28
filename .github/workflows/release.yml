@@ -95,11 +95,11 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          name: ${{ github.ref }}
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: ${{ steps.get_version.outputs.VERSION }}
           body: ${{steps.github_release.outputs.changelog}}
           files: |
-            dist/*
+            dist-release-arti/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
