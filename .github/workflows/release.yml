@@ -74,6 +74,7 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v1
         with:
           outputFile: ./tagchangelog.md
+          configuration: .github/configuration.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
