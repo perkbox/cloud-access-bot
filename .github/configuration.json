@@ -1,0 +1,46 @@
+{
+    "categories": [
+        {
+            "title": "## 💥 Breaking",
+            "labels": [
+                "breaking"
+            ]
+        },
+        {
+            "title": "## 🚀 Features",
+            "labels": [
+                "feature"
+            ]
+        },
+        {
+            "title": "## 🐛 Fixes",
+            "labels": [
+                "fix"
+            ]
+        },
+        {
+            "title": "## 🧪 Tests",
+            "labels": [
+                "test"
+            ]
+        },
+        {
+            "title": "## 📖 Documentation",
+            "labels": [
+                "documentation"
+            ]
+        },
+        {
+            "title": "## ❓ Other",
+            "labels": [
+                "other"
+            ]
+        }
+    ],
+    "sort": "ASC",
+    "template": "${{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n${{UNCATEGORIZED}}\n</details>",
+    "pr_template": "- ${{TITLE}}\n   - PR: #${{NUMBER}}",
+    "empty_template": "- no changes",
+    "max_pull_requests": 1000,
+    "max_back_track_time_days": 1000
+}

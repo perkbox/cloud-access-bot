@@ -33,7 +33,7 @@ func NewRequestCommandHandler(cfg settings.Settings, service *internal.Service, 
 	c.EventHandler.Handle(
 		socketmode.RequestTypeHello,
 		func(event *socketmode.Event, client *socketmode.Client) {
-			logrus.Infof("Sucessfully Connected to Slack")
+			logrus.Infof("Successfully Connected to Slack")
 		},
 	)
 
@@ -278,7 +278,7 @@ func (c *SlashCommandController) requestModelSubmitted(evt *socketmode.Event, cl
 	for _, approver := range approvers {
 		respChan, timestamp, err := c.Service.Messenger.PostBlockMessage(approver, blocks, auditObj.RequestId)
 		if err != nil {
-			logrus.Fatalf("Error posting aproval message: Err:%s", err.Error())
+			logrus.Fatalf("Error posting approval message: Err:%s", err.Error())
 			return
 		}
 		msgObj := internal.ApprovalMsgObj{Ts: timestamp, Channel: respChan}
