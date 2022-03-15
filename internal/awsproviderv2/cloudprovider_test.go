@@ -13,6 +13,9 @@ func NewMockCloudProvider() *ResourceFinder {
 	return &ResourceFinder{
 		S3Provider:       &S3Provider{Client: S3Mock{}, Regions: settings.Regions},
 		DynamodbProvider: &DynamodbProvider{Client: DynMock{}, Regions: settings.Regions},
+		SNSProvider:      &SNSProvider{Client: SNSMock{}, Regions: settings.Regions},
+		SQSProvider:      &SQSProvider{Client: SQSMock{}, Regions: settings.Regions},
+		LambdaProvider:   &LambdaProvider{Client: LambdaMock{}, Regions: settings.Regions},
 		Settings:         settings,
 	}
 }
@@ -68,6 +71,24 @@ func Test_ResourceFinder(t *testing.T) {
 			Resource:  "dynamodb",
 			HasFinder: true,
 			Expected:  []string{"TestDynTable1", "TestDynTable2"},
+		},
+		{
+			Name:      "Get SQS Resources",
+			Resource:  "sqs",
+			HasFinder: true,
+			Expected:  []string{"qeueA"},
+		},
+		{
+			Name:      "Get Lambda Resources",
+			Resource:  "lambda",
+			HasFinder: true,
+			Expected:  []string{"FunctionA"},
+		},
+		{
+			Name:      "Get SNS Resources",
+			Resource:  "sns",
+			HasFinder: true,
+			Expected:  []string{"topicA"},
 		},
 		{
 			Name:      "Get sts Resources(Should be empty)",
