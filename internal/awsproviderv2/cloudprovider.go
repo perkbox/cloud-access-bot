@@ -11,6 +11,9 @@ import (
 type ResourceFinder struct {
 	*S3Provider
 	*DynamodbProvider
+	*LambdaProvider
+	*SQSProvider
+	*SNSProvider
 	settings.Settings
 }
 
@@ -25,9 +28,23 @@ func NewAwsResourceFinder(cfg aws.Config, config settings.Settings) *ResourceFin
 	Dynamo.STSProvider = stsClient
 	Dynamo.Regions = config.Regions
 
+	Sqs := NewSqsClient(cfg)
+	Sqs.Regions = config.Regions
+	Sqs.STSProvider = stsClient
+
+	Lambda := NewLambdaClient(cfg)
+	Lambda.Regions = config.Regions
+	Lambda.STSProvider = stsClient
+
+	Sns := NewSnsClient(cfg)
+	Sns.Regions = config.Regions
+	Sns.STSProvider = stsClient
+
 	return &ResourceFinder{
 		S3Provider:       S3,
 		DynamodbProvider: Dynamo,
+		SQSProvider:      Sqs,
+		LambdaProvider:   Lambda,
 		Settings:         config,
 	}
 }
@@ -57,7 +74,17 @@ func (c *ResourceFinder) ResourceFinder(service string, accountName string) ([]s
 	case "s3":
 		bucketNames := c.S3Provider.GetBucketNames(roleArn)
 		return bucketNames, true
+	case "lambda":
+		lambdas := c.LambdaProvider.GetLambdaFunctions(roleArn)
+		return lambdas, true
+	case "sqs":
+		sqsQs := c.SQSProvider.GetSQSQueues(roleArn)
+		return sqsQs, true
+	case "sns":
+		snsTops := c.SNSProvider.GetSNSTopics(roleArn)
+		return snsTops, true
 	}
+
 	return nil, false
 }
 

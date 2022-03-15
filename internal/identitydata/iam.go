@@ -44,6 +44,12 @@ func (i IamDefinitions) GetResourceTmplDetails(service string) (string, string) 
 		data = ArnData{ResourceType: "table", TmplFieldName: "TableName"}
 	case "s3":
 		data = ArnData{ResourceType: "bucket", TmplFieldName: "BucketName"}
+	case "lambda":
+		data = ArnData{ResourceType: "function", TmplFieldName: "FunctionName"}
+	case "sqs":
+		data = ArnData{ResourceType: "queue", TmplFieldName: "QueueName"}
+	case "sns":
+		data = ArnData{ResourceType: "topic", TmplFieldName: "TopicName"}
 	}
 
 	if tmplstr, ok := i[service].Resources[data.ResourceType]; ok {
