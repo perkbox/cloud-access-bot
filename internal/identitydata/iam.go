@@ -4,9 +4,9 @@ import (
 	"embed"
 	"encoding/json"
 	"fmt"
-	"log"
 
 	"github.com/perkbox/cloud-access-bot/internal/utils"
+	"github.com/sirupsen/logrus"
 )
 
 //go:embed assets/*
@@ -17,12 +17,12 @@ func NewIamDefinitions() *IamDefinitions {
 
 	plan, err := pToolAssets.ReadFile("assets/iam-definition.json")
 	if err != nil {
-		log.Fatalln(err)
+		logrus.Fatalf("func:NewIamDefinitions, error reading in file from assets Err: %s ", err)
 	}
 
 	err = json.Unmarshal(plan, &iamDefinitions)
 	if err != nil {
-		log.Fatalln(err)
+		logrus.Fatalf("func:NewIamDefinitions, error unmarhaslling iam-definition.json Err: %s", err)
 	}
 
 	for serK, serV := range iamDefinitions {

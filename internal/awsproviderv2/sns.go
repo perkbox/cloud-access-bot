@@ -39,7 +39,7 @@ func (snsp *SNSProvider) GetSNSTopics(accountRoleArn string) []string {
 	}
 
 	var topicNames []string
-	for _, region := range p.Regions {
+	for _, region := range snsp.Regions {
 		snsResp, err := p.Client.ListTopics(context.TODO(), &sns.ListTopicsInput{}, func(o *sns.Options) {
 			o.Region = region
 		})

@@ -75,7 +75,9 @@ func (c *ResourceFinder) ResourceFinder(service string, accountName string) ([]s
 		bucketNames := c.S3Provider.GetBucketNames(roleArn)
 		return bucketNames, true
 	case "lambda":
+		logrus.Errorf("lambda called")
 		lambdas := c.LambdaProvider.GetLambdaFunctions(roleArn)
+		logrus.Infof(" Lambdas returned %s", lambdas)
 		return lambdas, true
 	case "sqs":
 		sqsQs := c.SQSProvider.GetSQSQueues(roleArn)
