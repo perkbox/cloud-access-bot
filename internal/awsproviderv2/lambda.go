@@ -39,7 +39,7 @@ func (lambdap *LambdaProvider) GetLambdaFunctions(accountRoleArn string) []strin
 
 	var functionNames []string
 
-	for _, region := range p.Regions {
+	for _, region := range lambdap.Regions {
 		listFuncsResp, err := p.Client.ListFunctions(context.TODO(), &lambda.ListFunctionsInput{}, func(o *lambda.Options) {
 			o.Region = region
 		})

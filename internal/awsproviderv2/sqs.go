@@ -39,7 +39,7 @@ func (sqsp *SQSProvider) GetSQSQueues(accountRoleArn string) []string {
 	}
 
 	var queueNames []string
-	for _, region := range p.Regions {
+	for _, region := range sqsp.Regions {
 		sqsResp, err := p.Client.ListQueues(context.TODO(), &sqs.ListQueuesInput{}, func(o *sqs.Options) {
 			o.Region = region
 		})
