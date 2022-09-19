@@ -120,7 +120,7 @@ func (c *SlashCommandController) updateViewAccountSelect(evt *socketmode.Event, 
 		return
 	}
 
-	client := clt.GetApiClient()
+	client := clt.Client
 	clt.Ack(*evt.Request)
 
 	viewBody, err := c.Service.Messenger.GenerateModal("accountSelectView", c.Settings.GetAccountNames(), c.Settings.GetLoginRoles(), false, "", "")
@@ -142,7 +142,7 @@ func (c *SlashCommandController) updateViewServices(evt *socketmode.Event, clt *
 		logrus.Errorf("ERROR converting event to Update View")
 		return
 	}
-	client := clt.GetApiClient()
+	client := clt.Client
 
 	selService := actionCallback.View.State.Values[messenger.IamServicesSelectorActionID][messenger.IamServicesSelectorActionID].SelectedOption.Value
 	selAccount := actionCallback.View.State.Values[messenger.AccountSelectorActionId][messenger.AccountSelectorActionId].SelectedOption.Value
@@ -171,7 +171,7 @@ func (c *SlashCommandController) handleRequestStart(evt *socketmode.Event, clt *
 	}
 
 	clt.Ack(*evt.Request)
-	client := clt.GetApiClient()
+	client := clt.Client
 
 	viewBody, err := c.Service.Messenger.GenerateModal("firstView", c.Settings.GetAccountNames(), c.Settings.GetLoginRoles(), false, "", "")
 	if err != nil {
@@ -229,7 +229,7 @@ func (c *SlashCommandController) requestModelSubmitted(evt *socketmode.Event, cl
 
 	clt.Ack(*evt.Request)
 
-	client := clt.GetApiClient()
+	client := clt.Client
 	id, err := client.GetUserInfo(viewCallabck.User.ID)
 	if err != nil {
 		logrus.Errorf("Error getting User info for %s Err: %s", viewCallabck.User.ID, err.Error())
