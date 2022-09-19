@@ -211,7 +211,7 @@ func (c *SlashCommandController) requestModelSubmitted(evt *socketmode.Event, cl
 
 	if _, err := strconv.Atoi(requestDuration); err != nil {
 		resp := slack.NewErrorsViewSubmissionResponse(map[string]string{
-			fmt.Sprintf("%s", messenger.TimeInputID): "Enter the duration indicating the number of minutes",
+			messenger.TimeInputID: "Enter the duration indicating the number of minutes",
 		})
 		clt.Ack(*evt.Request, resp)
 		return
