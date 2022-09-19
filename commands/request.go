@@ -3,19 +3,16 @@ package commands
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
-	"github.com/perkbox/cloud-access-bot/internal/messenger"
-
-	uuid "github.com/satori/go.uuid"
-
 	"github.com/perkbox/cloud-access-bot/internal"
-
+	"github.com/perkbox/cloud-access-bot/internal/messenger"
+	"github.com/perkbox/cloud-access-bot/internal/settings"
 	"github.com/perkbox/cloud-access-bot/internal/utils"
 
-	"github.com/perkbox/cloud-access-bot/internal/settings"
-
+	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 
 	"github.com/slack-go/slack"
@@ -211,6 +208,14 @@ func (c *SlashCommandController) requestModelSubmitted(evt *socketmode.Event, cl
 	selActions := c.Service.IdentityData.FindActionsById(actionIds)
 
 	selResources := messenger.GetValuesFromSelectedOptions(viewCallabck.View.State.Values[fmt.Sprintf("%s:%s", messenger.IamResourcesSelectorActionID, selService)][messenger.IamResourcesSelectorActionID].SelectedOptions)
+
+	if _, err := strconv.Atoi(requestDuration); err != nil {
+		resp := slack.NewErrorsViewSubmissionResponse(map[string]string{
+			fmt.Sprintf("%s", messenger.TimeInputID): "Enter the duration indicating the number of minutes",
+		})
+		clt.Ack(*evt.Request, resp)
+		return
+	}
 
 	if len(selResources) != 0 {
 		policyResources = c.Service.FindSelectedCloudResoucesNames(selService, viewCallabck.View.PrivateMetadata, selResources)
