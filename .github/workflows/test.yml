@@ -15,20 +15,20 @@ jobs:
     name: build-test
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.17
+      - name: Set up Go 1.19
         uses: actions/setup-go@v2
         with:
-          go-version: 1.17
-          
+          go-version: 1.19
+
       - uses: actions/checkout@v2
-        
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           push: false
 
       - name: Run Go Build
-        run: | 
+        run: |
           go build .
 
   golangci:
