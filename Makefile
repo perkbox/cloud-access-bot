@@ -9,7 +9,7 @@ clean:
 prepare:
 	GOBIN=$(BIN_DIR) go install github.com/mitchellh/gox
 
-build: prepare
+build:
 	$(BIN_DIR)/gox \
 	-osarch="darwin/amd64 linux/amd64 windows/amd64" \
 	-output "build/{{.OS}}-{{.Arch}}/$(NAME)" \
