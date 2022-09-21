@@ -37,7 +37,7 @@
       },
       "hint": {
         "type": "plain_text",
-        "text": "Enter the time as number minutes, e.g. 60"
+        "text": "Enter the time as number of minutes, e.g. 60"
       }
     },
     {
