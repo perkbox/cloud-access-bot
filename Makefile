@@ -24,5 +24,5 @@ dist:
 		echo $$f; \
 	done
 
-git-release-artifacts: clean prepare build dist
+git-release-artifacts: clean build dist
 
