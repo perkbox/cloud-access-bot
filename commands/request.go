@@ -3,19 +3,16 @@ package commands
 import (
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
-	"github.com/perkbox/cloud-access-bot/internal/messenger"
-
-	uuid "github.com/satori/go.uuid"
-
 	"github.com/perkbox/cloud-access-bot/internal"
-
+	"github.com/perkbox/cloud-access-bot/internal/messenger"
+	"github.com/perkbox/cloud-access-bot/internal/settings"
 	"github.com/perkbox/cloud-access-bot/internal/utils"
 
-	"github.com/perkbox/cloud-access-bot/internal/settings"
-
+	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 
 	"github.com/slack-go/slack"
@@ -120,7 +117,7 @@ func (c *SlashCommandController) updateViewAccountSelect(evt *socketmode.Event, 
 		return
 	}
 
-	client := clt.GetApiClient()
+	client := clt.Client
 	clt.Ack(*evt.Request)
 
 	viewBody, err := c.Service.Messenger.GenerateModal("accountSelectView", c.Settings.GetAccountNames(), c.Settings.GetLoginRoles(), false, "", "")
@@ -142,7 +139,7 @@ func (c *SlashCommandController) updateViewServices(evt *socketmode.Event, clt *
 		logrus.Errorf("ERROR converting event to Update View")
 		return
 	}
-	client := clt.GetApiClient()
+	client := clt.Client
 
 	selService := actionCallback.View.State.Values[messenger.IamServicesSelectorActionID][messenger.IamServicesSelectorActionID].SelectedOption.Value
 	selAccount := actionCallback.View.State.Values[messenger.AccountSelectorActionId][messenger.AccountSelectorActionId].SelectedOption.Value
@@ -171,7 +168,7 @@ func (c *SlashCommandController) handleRequestStart(evt *socketmode.Event, clt *
 	}
 
 	clt.Ack(*evt.Request)
-	client := clt.GetApiClient()
+	client := clt.Client
 
 	viewBody, err := c.Service.Messenger.GenerateModal("firstView", c.Settings.GetAccountNames(), c.Settings.GetLoginRoles(), false, "", "")
 	if err != nil {
@@ -212,6 +209,14 @@ func (c *SlashCommandController) requestModelSubmitted(evt *socketmode.Event, cl
 
 	selResources := messenger.GetValuesFromSelectedOptions(viewCallabck.View.State.Values[fmt.Sprintf("%s:%s", messenger.IamResourcesSelectorActionID, selService)][messenger.IamResourcesSelectorActionID].SelectedOptions)
 
+	if _, err := strconv.Atoi(requestDuration); err != nil {
+		resp := slack.NewErrorsViewSubmissionResponse(map[string]string{
+			messenger.TimeInputID: "Enter the duration indicating the number of minutes",
+		})
+		clt.Ack(*evt.Request, resp)
+		return
+	}
+
 	if len(selResources) != 0 {
 		policyResources = c.Service.FindSelectedCloudResoucesNames(selService, viewCallabck.View.PrivateMetadata, selResources)
 	}
@@ -229,7 +234,7 @@ func (c *SlashCommandController) requestModelSubmitted(evt *socketmode.Event, cl
 
 	clt.Ack(*evt.Request)
 
-	client := clt.GetApiClient()
+	client := clt.Client
 	id, err := client.GetUserInfo(viewCallabck.User.ID)
 	if err != nil {
 		logrus.Errorf("Error getting User info for %s Err: %s", viewCallabck.User.ID, err.Error())

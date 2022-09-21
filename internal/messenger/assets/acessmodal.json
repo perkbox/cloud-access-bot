@@ -34,6 +34,10 @@
         "type": "plain_text",
         "text": "Enter Time for Extended Permissions",
         "emoji": true
+      },
+      "hint": {
+        "type": "plain_text",
+        "text": "Enter the time as number of minutes, e.g. 60"
       }
     },
     {

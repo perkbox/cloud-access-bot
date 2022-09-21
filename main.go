@@ -8,26 +8,20 @@ import (
 	"strings"
 
 	"github.com/perkbox/cloud-access-bot/commands"
-
-	"github.com/slack-go/slack"
-
-	"github.com/perkbox/cloud-access-bot/internal/settings"
-
-	"github.com/perkbox/cloud-access-bot/internal/messenger"
-
-	"github.com/slack-go/slack/socketmode"
-
+	"github.com/perkbox/cloud-access-bot/internal"
+	"github.com/perkbox/cloud-access-bot/internal/awsproviderv2"
 	"github.com/perkbox/cloud-access-bot/internal/identitydata"
-
+	"github.com/perkbox/cloud-access-bot/internal/messenger"
 	"github.com/perkbox/cloud-access-bot/internal/policy"
+	"github.com/perkbox/cloud-access-bot/internal/repository"
+	"github.com/perkbox/cloud-access-bot/internal/settings"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	runtime "github.com/banzaicloud/logrus-runtime-formatter"
 	"github.com/joho/godotenv"
-	"github.com/perkbox/cloud-access-bot/internal"
-	"github.com/perkbox/cloud-access-bot/internal/awsproviderv2"
-	"github.com/perkbox/cloud-access-bot/internal/repository"
 	"github.com/sirupsen/logrus"
+	"github.com/slack-go/slack"
+	"github.com/slack-go/slack/socketmode"
 )
 
 func init() {
@@ -66,10 +60,10 @@ func main() {
 		repository.NewDynamoDBRRepo(cfg, settings.GetDynamodbTable()),
 		policy.NewPolicyManager(cfg, settings, nil, nil),
 		identitydata.NewIamDefinitions(),
-		messenger.NewMessenger(client.GetApiClient()),
+		messenger.NewMessenger(&client.Client),
 	)
 
-	socketmodeHandler := socketmode.NewsSocketmodeHandler(client)
+	socketmodeHandler := socketmode.NewSocketmodeHandler(client)
 
 	commands.NewRequestCommandHandler(settings, service, socketmodeHandler)
 
@@ -77,7 +71,6 @@ func main() {
 }
 
 func connectToSlackViaSocketmode() (*socketmode.Client, error) {
-
 	appToken := os.Getenv("SLACK_APP_TOKEN")
 	if appToken == "" {
 		return nil, errors.New("SLACK_APP_TOKEN must be set")
