@@ -1,4 +1,19 @@
 
+ 
+ 
+
+## v1.0.2
+
+
+<details>
+<summary>Uncategorized</summary>
+
+- Add pagination to lamdbda ListFunctions
+   - PR: #10
+
+</details>
+
+
 ## v1.0.2
 ## 🐛 Fixes
 
