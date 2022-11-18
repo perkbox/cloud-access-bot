@@ -38,17 +38,26 @@ func (lambdap *LambdaProvider) GetLambdaFunctions(accountRoleArn string) []strin
 	}
 
 	var functionNames []string
+	var token *string
 
 	for _, region := range lambdap.Regions {
-		listFuncsResp, err := p.Client.ListFunctions(context.TODO(), &lambda.ListFunctionsInput{}, func(o *lambda.Options) {
-			o.Region = region
-		})
-		if err != nil {
-			logrus.Errorf("func:GetLambdaFunctions: Error Fetching Functions.  AWS Error: %s", err.Error())
-		}
+		for {
+			listFuncsResp, err := p.Client.ListFunctions(context.TODO(), &lambda.ListFunctionsInput{Marker: token}, func(o *lambda.Options) {
+				o.Region = region
+			})
+			if err != nil {
+				logrus.Errorf("func:GetLambdaFunctions: Error Fetching Functions.  AWS Error: %s", err.Error())
+			}
 
-		for _, v := range listFuncsResp.Functions {
-			functionNames = append(functionNames, aws.ToString(v.FunctionName))
+			for _, v := range listFuncsResp.Functions {
+				functionNames = append(functionNames, aws.ToString(v.FunctionName))
+			}
+
+			if listFuncsResp.NextMarker != nil {
+				token = listFuncsResp.NextMarker
+			} else {
+				break
+			}
 		}
 	}
 
