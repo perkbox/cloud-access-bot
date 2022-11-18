@@ -1,5 +1,8 @@
 
- 
+## v1.0.2
+## 🐛 Fixes
+
+- Fix all lambdas not showing because of lack of pagination in the `ListFunctions` method
  
 
 ## v1.0.1
