@@ -67,7 +67,7 @@ func NewService(cloud Cloud, repo Repo, cim CloudIdentityManager, identitydata I
 	}
 }
 
-//GetServicesWithFilter Gets Services with a filter and returns them as a list. Will return an empty []string if nothing is found.
+// GetServicesWithFilter Gets Services with a filter and returns them as a list. Will return an empty []string if nothing is found.
 func (s *Service) GetServicesWithFilter(filter string) []string {
 	services := []string{}
 
@@ -82,8 +82,8 @@ func (s *Service) GetServicesWithFilter(filter string) []string {
 	return services
 }
 
-//GetActionsWithFilter Gets Actions for a selected service with a filter. Returns a map[string]string the key is the service name while the value
-//is a unique id for each action. Will return an empty map[string]string if there is nothing found.
+// GetActionsWithFilter Gets Actions for a selected service with a filter. Returns a map[string]string the key is the service name while the value
+// is a unique id for each action. Will return an empty map[string]string if there is nothing found.
 func (s *Service) GetActionsWithFilter(service string, filter string) map[string]string {
 	actions := make(map[string]string)
 
@@ -116,12 +116,11 @@ func (s *Service) GetCloudUserId(accountName string, roleName string) (string, e
 // ordered and as simple as possible in the service interface
 func (s *Service) GetCloudResourcesForService(filter, service, accountname string) (map[string]string, bool) {
 	resources, hasFinder := s.Cloud.ResourceFinder(service, accountname)
-
 	resourcesNoDups := utils.RemoveDuplicateStr(resources)
 
 	hashMap := make(map[string]string)
 	for _, table := range resourcesNoDups {
-		if strings.Contains(table, filter) {
+		if strings.Contains(strings.ToLower(table), strings.ToLower(filter)) {
 			hashMap[table] = utils.HashString(table, 6)
 		}
 	}
