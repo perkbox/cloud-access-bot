@@ -42,7 +42,7 @@ jobs:
 
       - name: Build Release Binarys
         run: |
-          make git-release-artifacts 
+          make git-release-artifacts
 
       - name: Archive release artifacts
         uses: actions/upload-artifact@v2
