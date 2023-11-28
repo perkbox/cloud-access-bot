@@ -46,9 +46,7 @@ func (dyn *DynamodbProvider) GetDynamoTableNames(accountRoleArn string) []string
 				logrus.Errorf("func:GetDynamoTableNames: AWS Error: %s in region %s", err.Error(), region)
 				return []string{}
 			}
-			for _, tableName := range page.TableNames {
-				tablesRsp = append(tablesRsp, tableName)
-			}
+			tablesRsp = append(tablesRsp, page.TableNames...)
 		}
 	}
 	return tablesRsp
