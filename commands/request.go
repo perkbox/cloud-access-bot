@@ -99,6 +99,7 @@ func (c *SlashCommandController) SuggestServices(evt *socketmode.Event, clt *soc
 		selService := strings.Split(suggestCallback.BlockID, ":")[1]
 		resources, _ := c.Service.GetCloudResourcesForService(suggestCallback.Value, selService, suggestCallback.View.PrivateMetadata)
 		payloadOpts = messenger.MapToOptions(resources, "plain_text")
+
 	default:
 		logrus.Warnf("Unknown action")
 		return

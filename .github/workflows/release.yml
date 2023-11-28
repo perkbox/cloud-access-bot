@@ -8,7 +8,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
@@ -21,7 +21,7 @@ jobs:
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
       - name: Build image and push to Docker Hub and GitHub Container Registry
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           tags: |
             perkbox/cloud-access-bot:${{ steps.get_version.outputs.VERSION }}
@@ -33,19 +33,19 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.19
-        uses: actions/setup-go@v2
+      - name: Set up Go 1.21
+        uses: actions/setup-go@v4
         with:
-          go-version: 1.19
+          go-version: 1.21
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Build Release Binarys
         run: |
           make git-release-artifacts
 
       - name: Archive release artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: dist-release-arti
           path: |
@@ -58,12 +58,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
 
       - name: Download all workflow run artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
 
       - name: Get the version
         id: get_version
