@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/fs"
-	"io/ioutil"
+	"io"
 	"text/template"
 
 	"github.com/slack-go/slack"
@@ -76,7 +76,7 @@ func renderTemplate(fs fs.FS, file string, args interface{}) (bytes.Buffer, erro
 		return bytes.Buffer{}, fmt.Errorf("func:renderTemplate: error opening asset file %s", err.Error())
 	}
 
-	fby, _ := ioutil.ReadAll(f)
+	fby, _ := io.ReadAll(f)
 
 	//ParseFS doesn't seem to work
 	t := template.Must(template.New("tmpl").Funcs(template.FuncMap{"counter": counter}).Parse(string(fby)))

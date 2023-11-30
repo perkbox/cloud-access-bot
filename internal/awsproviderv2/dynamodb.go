@@ -38,16 +38,16 @@ func (dyn *DynamodbProvider) GetDynamoTableNames(accountRoleArn string) []string
 
 	var tablesRsp []string
 	for _, region := range dyn.Regions {
-		tables, err := p.Client.ListTables(context.TODO(), &dynamodb.ListTablesInput{}, func(o *dynamodb.Options) {
-			o.Region = region
-		})
-		if err != nil {
-			logrus.Errorf("func:GetDynamoTableNames: Error Fetching Dynamo Tables from region %s with role %s", region, accountRoleArn)
-			continue
+		paginator := dynamodb.NewListTablesPaginator(p.Client, &dynamodb.ListTablesInput{}, func(o *dynamodb.ListTablesPaginatorOptions) {})
+
+		for paginator.HasMorePages() {
+			page, err := paginator.NextPage(context.TODO(), func(o *dynamodb.Options) { o.Region = region })
+			if err != nil {
+				logrus.Errorf("func:GetDynamoTableNames: AWS Error: %s in region %s", err.Error(), region)
+				return []string{}
+			}
+			tablesRsp = append(tablesRsp, page.TableNames...)
 		}
-
-		tablesRsp = append(tablesRsp, tables.TableNames...)
 	}
-
 	return tablesRsp
 }
