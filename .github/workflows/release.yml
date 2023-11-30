@@ -29,7 +29,7 @@ jobs:
           push: true
 
 
-  build-go-binarys:
+  build-go-binaries:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
@@ -40,7 +40,7 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - name: Build Release Binarys
+      - name: Build Release Binaries
         run: |
           make git-release-artifacts
 
@@ -54,7 +54,7 @@ jobs:
 
   release:
     if: startsWith(github.ref, 'refs/tags/')
-    needs: [build-go-binarys, build-docker-image]
+    needs: [build-go-binaries, build-docker-image]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
