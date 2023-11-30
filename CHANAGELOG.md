@@ -2,6 +2,24 @@
  
  
 
+## v1.0.3
+## 🐛 Fixes
+
+- DS-3319 ddb selector not working
+   - PR: #12
+
+
+
+<details>
+<summary>Uncategorized</summary>
+
+
+</details>
+
+
+ 
+ 
+
 ## v1.0.2
 
 
